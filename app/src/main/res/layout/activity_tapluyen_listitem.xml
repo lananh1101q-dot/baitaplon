@@ -29,6 +29,13 @@ android:padding="8dp">
         android:text="200 kcal"
         android:textSize="16sp"
         android:textColor="#FF5722" />
+    <TextView
+        android:id="@+id/txtThoigian"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="200 kcal"
+        android:textSize="16sp"
+        android:textColor="#FF5722" />
 </LinearLayout>
 
 <ImageButton

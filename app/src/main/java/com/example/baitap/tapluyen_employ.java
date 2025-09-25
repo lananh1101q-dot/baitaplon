@@ -1,12 +1,11 @@
 package com.example.baitap;
 
-
-public class luyentap_employ {
+public class tapluyen_employ {
     private String ten;
     private int thoigian; // phút
     private int calo;     // calo tiêu thụ
 
-    public luyentap_employ(String ten, int thoigian, int calo) {
+    public tapluyen_employ(String ten, int thoigian, int calo) {
         this.ten = ten;
         this.thoigian = thoigian;
         this.calo = calo;

@@ -13,13 +13,17 @@
         android:layout_above="@id/bottomNavigationView2">
 
         <TextView
-            android:id="@+id/viewTitle"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="Tap luyen"
             android:textSize="60sp" />
-
+        <SearchView
+            android:id="@+id/timkiem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:queryHint="Tìm bài tập..." />
         <Button
             android:id="@+id/thembaitap"
             android:layout_width="match_parent"
