@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:orientation="vertical"
+    android:background="#F8F8F8"
+    android:padding="24dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mục tiêu"
+        android:textSize="22sp"
+        android:textColor="#35C47E"
+        android:layout_marginBottom="16dp"
+        android:layout_gravity="center"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mục tiêu của bạn là gì?"
+        android:textSize="16sp"
+        android:layout_marginBottom="24dp"
+        android:layout_gravity="center"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/giamcan"
+        android:text="Giảm cân\nQuản lý cân nặng của bạn bằng cách ăn uống thông minh hơn"
+        android:backgroundTint="#E0FFF4"
+        android:textColor="#35C47E"
+        android:layout_marginBottom="16dp"
+        />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/giucan"
+        android:text="Giữ nguyên cân nặng\nTối ưu cho sức khoẻ của bạn"
+        android:backgroundTint="#FFF"
+        android:textColor="#222"
+        android:layout_marginBottom="16dp"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tangcan"
+        android:text="Tăng cân\nTăng cân với eat clean"
+        android:backgroundTint="#FFF9E5"
+        android:textColor="#FF914D"/>
+</LinearLayout>

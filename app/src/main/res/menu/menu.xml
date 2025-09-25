@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+
+        android:id="@+id/menu_uongnuoc"
+        android:title="Uống nước "/>
+    <item
+
+        android:id="@+id/menu_thucan"
+        android:title="Thức Ăn"/>
+    <item
+
+        android:id="@+id/menu_tapluyen"
+        android:title="Tập luyện"
+        />
+    <item
+
+        android:id="@+id/menu_thongke"
+        android:title="Thống kê"
+        />
+    <item
+
+        android:id="@+id/menu_muctieu"
+        android:title="Mục tiêu"
+        />
+</menu>
