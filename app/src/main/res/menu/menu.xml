@@ -19,6 +19,7 @@
         android:id="@+id/menu_thongke"
         android:title="Thống kê"
         />
+
     <item
 
         android:id="@+id/menu_muctieu"
