@@ -1,67 +1,42 @@
 package com.example.baitap;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.widget.Button;
-import android.widget.TextView;
+public class muctieu {
+    private int id;
+    private String tenMucTieu;
+    private double chieuCao;
+    private double canNang;
+    private double bmi;
+    private int nangLuong;
+    private int luongNuoc;
+    private String ngay;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-
-public class muctieu extends AppCompatActivity {
-
-    TextView txtNl, txtBmi, txtChieuCao, txtCanNang, txtLuongNuoc, txtMucTieu, txtNgay;
-    Button btnMucTieu;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_muctieu); // layout3 bạn gửi
-
-        // Ánh xạ view
-        txtNl = findViewById(R.id.nl);
-        txtBmi = findViewById(R.id.bmi);
-        txtChieuCao = findViewById(R.id.chieucao_mt);
-        txtCanNang = findViewById(R.id.cannang_mt);
-        txtLuongNuoc = findViewById(R.id.luongnuoc);
-        txtMucTieu = findViewById(R.id.muctieu);
-        txtNgay = findViewById(R.id.ngay);
-        btnMucTieu = findViewById(R.id.btmuctieu);
-
-        // ✅ Hiển thị ngày/tháng/năm hiện tại
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        String currentDate = sdf.format(calendar.getTime());
-        txtNgay.setText(currentDate);
-
-        // ✅ Nhận dữ liệu từ Intent
-        Intent intent = getIntent();
-        double chieuCao = intent.getDoubleExtra("chieucao", 0);
-        double canNang = intent.getDoubleExtra("cannang", 0);
-        double bmr = intent.getDoubleExtra("bmr", 0);
-        String mucTieu = intent.getStringExtra("muctieu");
-
-        // ✅ Hiển thị dữ liệu
-        txtChieuCao.setText(chieuCao + " cm");
-        txtCanNang.setText(canNang + " kg");
-        txtNl.setText(Math.round(bmr) + " kcal/ngày");
-
-        double bmi = canNang / Math.pow(chieuCao / 100, 2);
-        txtBmi.setText(String.format(Locale.getDefault(), "%.1f", bmi));
-
-        double nuoc = canNang * 35; // ml/ngày
-        txtLuongNuoc.setText((int) nuoc + " ml/ngày");
-
-        txtMucTieu.setText("Mục tiêu: " + mucTieu);
-
-        // ✅ Nút quay về Layout1
-        btnMucTieu.setOnClickListener(v -> {
-            Intent i = new Intent(muctieu.this, muctieu_chiso.class);
-            startActivity(i);
-            finish();
-        });
+    public muctieu(int id, String tenMucTieu, double chieuCao, double canNang,
+                   double bmi, int nangLuong, int luongNuoc, String ngay) {
+        this.id = id;
+        this.tenMucTieu = tenMucTieu;
+        this.chieuCao = chieuCao;
+        this.canNang = canNang;
+        this.bmi = bmi;
+        this.nangLuong = nangLuong;
+        this.luongNuoc = luongNuoc;
+        this.ngay = ngay;
     }
+
+    // Getter & Setter
+    public int getId() { return id; }
+    public String getTenMucTieu() { return tenMucTieu; }
+    public double getChieuCao() { return chieuCao; }
+    public double getCanNang() { return canNang; }
+    public double getBmi() { return bmi; }
+    public int getNangLuong() { return nangLuong; }
+    public int getLuongNuoc() { return luongNuoc; }
+    public String getNgay() { return ngay; }
+    public void setId(int id) { this.id = id; }
+    public void setTenMucTieu(String tenMucTieu) { this.tenMucTieu = tenMucTieu; }
+    public void setChieuCao(double chieuCao) { this.chieuCao = chieuCao; }
+    public void setCanNang(double canNang) { this.canNang = canNang; }
+    public void setBmi(double bmi) { this.bmi = bmi; }
+    public void setNangLuong(int nangLuong) { this.nangLuong = nangLuong; }
+    public void setLuongNuoc(int luongNuoc) { this.luongNuoc = luongNuoc; }
+    public void setNgay(String ngay) { this.ngay = ngay; }
 }
