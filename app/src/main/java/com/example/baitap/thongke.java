@@ -2,19 +2,24 @@ package com.example.baitap;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.widget.DatePicker;
+import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class thongke extends AppCompatActivity {
 
-    TextView tvNgay, tvTieuThu, tvHapThu, tvNlCanNap, tvNcCanNap;
+    TextView tvNgay, tvTieuThu, tvHapThu, tvNuocUong, tvChenhLech;
+    Button btnNgay, btnTuan, btnThang;
     database db;
+    MucTieuDAO mucTieuDAO;
+    private String loaiThongKe = "ngay"; // mặc định là ngày
+    private String ngayHienTai;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,100 +30,206 @@ public class thongke extends AppCompatActivity {
         tvNgay = findViewById(R.id.ngay);
         tvTieuThu = findViewById(R.id.tieuthu);
         tvHapThu = findViewById(R.id.hapthu);
-        tvNlCanNap = findViewById(R.id.nlcannap);
-        tvNcCanNap = findViewById(R.id.nccannap);
+        tvNuocUong = findViewById(R.id.nccannap);
+        tvChenhLech = findViewById(R.id.nlcannap);
+        
+        btnNgay = findViewById(R.id.btnNgay);
+        btnTuan = findViewById(R.id.btnTuan);
+        btnThang = findViewById(R.id.btnThang);
 
         db = new database(this);
+        // Tự động tạo dữ liệu mẫu nếu database trống
+        db.autoSeedIfEmpty();
+        
+        mucTieuDAO = new MucTieuDAO(this);
 
+        // Lấy ngày hôm nay
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        ngayHienTai = sdf.format(calendar.getTime());
 
-        // Lấy thống kê mới nhất (ngày hôm nay)
-//        Cursor c = db.layThongKeMoiNhat();
-//        if (c.moveToFirst()) {
-//            int caloNap = c.getInt(c.getColumnIndexOrThrow("calonap"));
-//            int caloTieuThu = c.getInt(c.getColumnIndexOrThrow("calotieuthu"));
-//            int nlCan = c.getInt(c.getColumnIndexOrThrow("nlcan"));
-//            int lgCan = c.getInt(c.getColumnIndexOrThrow("lgcan"));
-//            String ngayStr = c.getString(c.getColumnIndexOrThrow("ngay"));
-//
-//            tvHapThu.setText(String.valueOf(caloNap));
-//            tvTieuThu.setText(String.valueOf(caloTieuThu));
-//            tvNlCanNap.setText(String.valueOf(nlCan));
-//            tvNcCanNap.setText(String.valueOf(lgCan));
-//            tvNgay.setText(ngayStr);
-//        }
-//        c.close();
-//
-//        // hiển thị thống kê hôm nay
-//        Calendar calendar = Calendar.getInstance();
-//        int y = calendar.get(Calendar.YEAR);
-//        int m = calendar.get(Calendar.MONTH) + 1;
-//        int d = calendar.get(Calendar.DAY_OF_MONTH);
-//        String ngayHomNay = y + "-" + m + "-" + d;
-//        tvNgay.setText("Ngày: " + ngayHomNay);
-//        loadThongKeTheoNgay(ngayHomNay);
-//
-//        // khi bấm vào chữ "ngày" thì mở DatePicker
-//        tvNgay.setOnClickListener(v -> {
-//            Calendar cal = Calendar.getInstance();
-//            int year = cal.get(Calendar.YEAR);
-//            int month = cal.get(Calendar.MONTH);
-//            int day = cal.get(Calendar.DAY_OF_MONTH);
-//
-//            DatePickerDialog dialog = new DatePickerDialog(
-//                    thongke.this,
-//                    (DatePicker view, int y1, int m1, int d1) -> {
-//                        String ngay = y1 + "-" + (m1 + 1) + "-" + d1;
-//                        tvNgay.setText("Ngày: " + ngay);
-//                        loadThongKeTheoNgay(ngay);
-//                    },
-//                    year, month, day
-//            );
-//            dialog.show();
-//        });
+        // Hiển thị thống kê theo ngày mặc định
+        loadThongKeTheoNgay(ngayHienTai);
 
-        // bottom navigation nếu cần
+        // Sự kiện nút Ngày
+        btnNgay.setOnClickListener(v -> {
+            loaiThongKe = "ngay";
+            hienThiDatePicker();
+        });
+
+        // Sự kiện nút Tuần
+        btnTuan.setOnClickListener(v -> {
+            loaiThongKe = "tuan";
+            loadThongKeTheoTuan();
+        });
+
+        // Sự kiện nút Tháng
+        btnThang.setOnClickListener(v -> {
+            loaiThongKe = "thang";
+            hienThiMonthPicker();
+        });
+
+        // Click vào TextView ngày để chọn ngày khác
+        tvNgay.setOnClickListener(v -> {
+            if (loaiThongKe.equals("ngay")) {
+                hienThiDatePicker();
+            } else if (loaiThongKe.equals("thang")) {
+                hienThiMonthPicker();
+            }
+        });
+
+        // bottom navigation
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView2);
         bottomNavigationView.setSelectedItemId(R.id.menu_thongke);
 
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.menu_muctieu) {
-                startActivity(new Intent(this, muctieu.class));
+                startActivity(new Intent(this, MucTieuActivity.class));
                 return true;
             } else if (id == R.id.menu_tapluyen) {
                 startActivity(new Intent(this, tapluyen.class));
                 return true;
-            }
-            else if (id == R.id.menu_thongke) {
-
+            } else if (id == R.id.menu_thongke) {
                 return true;
             }
-//            else if (id == R.id.menu_uongnuoc) {
-//                startActivity(new Intent(this, UongNuocActivity.class));
-//                return true;
-//            }
             return false;
         });
     }
 
-//    private void loadThongKeTheoNgay(String ngay) {
-//        Cursor c = db.layThongKeTheoNgay(ngay);
-//        if (c != null && c.moveToFirst()) {
-//            int calotieuthu = c.getInt(c.getColumnIndexOrThrow("calotieuthu"));
-//            int calonap = c.getInt(c.getColumnIndexOrThrow("calonap"));
-//            int nlcan = c.getInt(c.getColumnIndexOrThrow("nlcan"));
-//            int lgcan = c.getInt(c.getColumnIndexOrThrow("lgcan"));
-//
-//            tvTieuThu.setText(String.valueOf(calotieuthu));
-//            tvHapThu.setText(String.valueOf(calonap));
-//            tvNlCanNap.setText(String.valueOf(nlcan));
-//            tvNcCanNap.setText(String.valueOf(lgcan));
-//        } else {
-//            tvTieuThu.setText("0");
-//            tvHapThu.setText("0");
-//            tvNlCanNap.setText("0");
-//            tvNcCanNap.setText("0");
-//        }
-//        if (c != null) c.close();
-//    }
+    private void hienThiDatePicker() {
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog dialog = new DatePickerDialog(
+                thongke.this,
+                (view, y, m, d) -> {
+                    String ngay = y + "-" + String.format("%02d", (m + 1)) + "-" + String.format("%02d", d);
+                    loadThongKeTheoNgay(ngay);
+                },
+                year, month, day
+        );
+        dialog.show();
+    }
+
+    private void hienThiMonthPicker() {
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+
+        DatePickerDialog dialog = new DatePickerDialog(
+                thongke.this,
+                (view, y, m, d) -> {
+                    String thang = y + "-" + String.format("%02d", (m + 1));
+                    loadThongKeTheoThang(thang);
+                },
+                year, month, 1
+        );
+        dialog.show();
+    }
+
+    private void loadThongKeTheoNgay(String ngay) {
+        int caloTieuThu = db.getTongCaloTieuThuTheoNgay(ngay);
+        int caloHapThu = db.getTongCaloHapThuTheoNgay(ngay);
+        int nuocUong = db.getTongNuocUongTheoNgay(ngay);
+
+        // Lấy mục tiêu
+        muctieu mt = mucTieuDAO.getLatest();
+        int mucTieuCalo = (mt != null) ? mt.getNangLuong() : 2000;
+        int mucTieuNuoc = (mt != null) ? mt.getLuongNuoc() : 2000;
+
+        // Tính chênh lệch (calo hấp thụ - calo tiêu thụ)
+        int chenhLechCalo = caloHapThu - caloTieuThu;
+        int chenhLechNuoc = mucTieuNuoc - nuocUong;
+
+        // Hiển thị
+        tvNgay.setText("Ngày: " + formatNgay(ngay));
+        tvTieuThu.setText(caloTieuThu + " kcal");
+        tvHapThu.setText(caloHapThu + " kcal");
+        tvNuocUong.setText(nuocUong + " ml (Cần thêm: " + (chenhLechNuoc > 0 ? chenhLechNuoc : 0) + " ml)");
+        
+        String ketQua = chenhLechCalo > 0 
+            ? "Dư " + chenhLechCalo + " kcal" 
+            : (chenhLechCalo < 0 ? "Thiếu " + Math.abs(chenhLechCalo) + " kcal" : "Đủ");
+        tvChenhLech.setText(ketQua);
+    }
+
+    private void loadThongKeTheoTuan() {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String ngayBatDau = sdf.format(cal.getTime());
+
+        cal.add(Calendar.DAY_OF_MONTH, 6);
+        String ngayKetThuc = sdf.format(cal.getTime());
+
+        int caloTieuThu = db.getTongCaloTieuThuTheoTuan(ngayBatDau, ngayKetThuc);
+        int caloHapThu = db.getTongCaloHapThuTheoTuan(ngayBatDau, ngayKetThuc);
+        int nuocUong = db.getTongNuocUongTheoTuan(ngayBatDau, ngayKetThuc);
+
+        // Mục tiêu tuần = mục tiêu ngày * 7
+        muctieu mt = mucTieuDAO.getLatest();
+        int mucTieuCalo = (mt != null) ? mt.getNangLuong() * 7 : 14000;
+        int mucTieuNuoc = (mt != null) ? mt.getLuongNuoc() * 7 : 14000;
+
+        int chenhLechCalo = caloHapThu - caloTieuThu;
+        int chenhLechNuoc = mucTieuNuoc - nuocUong;
+
+        tvNgay.setText("Tuần: " + formatNgay(ngayBatDau) + " - " + formatNgay(ngayKetThuc));
+        tvTieuThu.setText(caloTieuThu + " kcal");
+        tvHapThu.setText(caloHapThu + " kcal");
+        tvNuocUong.setText(nuocUong + " ml (Cần thêm: " + (chenhLechNuoc > 0 ? chenhLechNuoc : 0) + " ml)");
+        
+        String ketQua = chenhLechCalo > 0 
+            ? "Dư " + chenhLechCalo + " kcal" 
+            : (chenhLechCalo < 0 ? "Thiếu " + Math.abs(chenhLechCalo) + " kcal" : "Đủ");
+        tvChenhLech.setText(ketQua);
+    }
+
+    private void loadThongKeTheoThang(String thang) {
+        int caloTieuThu = db.getTongCaloTieuThuTheoThang(thang);
+        int caloHapThu = db.getTongCaloHapThuTheoThang(thang);
+        int nuocUong = db.getTongNuocUongTheoThang(thang);
+
+        // Mục tiêu tháng = mục tiêu ngày * 30
+        muctieu mt = mucTieuDAO.getLatest();
+        int mucTieuCalo = (mt != null) ? mt.getNangLuong() * 30 : 60000;
+        int mucTieuNuoc = (mt != null) ? mt.getLuongNuoc() * 30 : 60000;
+
+        int chenhLechCalo = caloHapThu - caloTieuThu;
+        int chenhLechNuoc = mucTieuNuoc - nuocUong;
+
+        tvNgay.setText("Tháng: " + thang);
+        tvTieuThu.setText(caloTieuThu + " kcal");
+        tvHapThu.setText(caloHapThu + " kcal");
+        tvNuocUong.setText(nuocUong + " ml (Cần thêm: " + (chenhLechNuoc > 0 ? chenhLechNuoc : 0) + " ml)");
+        
+        String ketQua = chenhLechCalo > 0 
+            ? "Dư " + chenhLechCalo + " kcal" 
+            : (chenhLechCalo < 0 ? "Thiếu " + Math.abs(chenhLechCalo) + " kcal" : "Đủ");
+        tvChenhLech.setText(ketQua);
+    }
+
+    private String formatNgay(String ngay) {
+        try {
+            SimpleDateFormat sdfInput = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            SimpleDateFormat sdfOutput = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            return sdfOutput.format(sdfInput.parse(ngay));
+        } catch (Exception e) {
+            return ngay;
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh dữ liệu khi quay lại màn hình
+        if (loaiThongKe.equals("ngay")) {
+            loadThongKeTheoNgay(ngayHienTai);
+        } else if (loaiThongKe.equals("tuan")) {
+            loadThongKeTheoTuan();
+        }
+    }
 }
