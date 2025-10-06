@@ -27,6 +27,8 @@
 
         <activity android:name=".muctieu_themmuctieu"></activity>
         <activity android:name=".tapluyen_thembaitap"></activity>
+        <receiver android:name=".NuocReceiver" />
+
 
     </application>
 

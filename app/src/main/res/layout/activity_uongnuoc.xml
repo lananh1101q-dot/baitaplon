@@ -1,0 +1,30 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/txtTongLuongNuoc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tổng: 0 ml"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:paddingBottom="12dp"/>
+
+    <ListView
+        android:id="@+id/listNuoc"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="1dp"/>
+
+    <!-- Nút bật nhắc nhở -->
+    <Button
+        android:id="@+id/btnNhacNho"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Bật nhắc nhở uống nước"/>
+</LinearLayout>
