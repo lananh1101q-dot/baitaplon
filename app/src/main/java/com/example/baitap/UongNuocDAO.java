@@ -5,7 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class UongNuocDAO {
     private database dbHelper;
@@ -14,63 +16,29 @@ public class UongNuocDAO {
         dbHelper = new database(context);
     }
 
-    // Thêm bản ghi
-    public void insert(UongNuocEmploy un) {
+    // Thêm lượng nước vừa uống
+    public long insert(int soMl) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("luongnuoc", un.getLuongNuoc());
-        values.put("ngay", un.getNgay());
-        db.insert("uongnuoc", null, values);
+        ContentValues v = new ContentValues();
+        String ngay = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        String gio = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+        v.put("ngay", ngay);
+        v.put("gio", gio);
+        v.put("luongnuoc", soMl);
+        long id = db.insert("uongnuoc", null, v);
         db.close();
+        return id;
     }
 
-    // Cập nhật
-    public void update(UongNuocEmploy un) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("luongnuoc", un.getLuongNuoc());
-        values.put("ngay", un.getNgay());
-        db.update("uongnuoc", values, "id=?", new String[]{String.valueOf(un.getId())});
-        db.close();
-    }
-
-    // Xóa
-    public void delete(int id) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        db.delete("uongnuoc", "id=?", new String[]{String.valueOf(id)});
-        db.close();
-    }
-
-    // Lấy tất cả
-    public ArrayList<UongNuocEmploy> getAll() {
-        ArrayList<UongNuocEmploy> list = new ArrayList<>();
+    // Lấy tổng lượng nước đã uống hôm nay
+    public int getTongHomNay() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM uongnuoc ORDER BY ngay DESC", null);
-        if (c.moveToFirst()) {
-            do {
-                list.add(new UongNuocEmploy(
-                        c.getInt(0),
-                        c.getInt(1),
-                        c.getString(2)
-                ));
-            } while (c.moveToNext());
-        }
-        c.close();
-        db.close();
-        return list;
-    }
-
-    // Tính tổng lượng nước đã uống trong 1 ngày
-    public int getTongLuongNuocTrongNgay(String ngay) {
+        String ngay = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        Cursor c = db.rawQuery("SELECT SUM(luongnuoc) FROM uongnuoc WHERE ngay = ?", new String[]{ngay});
         int tong = 0;
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT SUM(luongnuoc) FROM uongnuoc WHERE ngay=?", new String[]{ngay});
-        if (c.moveToFirst()) {
-            tong = c.getInt(0);
-        }
+        if (c.moveToFirst()) tong = c.getInt(0);
         c.close();
         db.close();
         return tong;
     }
 }
-
