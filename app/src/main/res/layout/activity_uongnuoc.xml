@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -10,14 +11,16 @@
         android:id="@+id/tvMucTieu"
         android:text="Mục tiêu hôm nay: ..."
         android:textSize="18sp"
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <TextView
         android:id="@+id/tvTongUong"
         android:text="Đã uống: ..."
         android:textSize="18sp"
-        android:layout_marginBottom="20dp"/>
-
+        android:layout_marginBottom="20dp"    android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
     <EditText
         android:id="@+id/edtNhapNuoc"
         android:hint="Nhập số ml vừa uống"
@@ -31,4 +34,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"/>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:itemIconSize="40dp"
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/menu" />
 </LinearLayout>

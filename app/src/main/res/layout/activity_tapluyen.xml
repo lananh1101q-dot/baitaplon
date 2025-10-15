@@ -14,7 +14,7 @@
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-          android:id="@+id/txtNgay" />
+            android:id="@+id/txtNgay" />
         <TextView
 
             android:layout_width="match_parent"
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:text="Chọn" />
 
-        <androidx.recyclerview.widget.RecyclerView
+        <ListView
             android:id="@+id/dstapluyen"
             android:layout_width="match_parent"
             android:layout_height="0dp"

@@ -6,6 +6,15 @@ public class    tapluyen_employ {
     private int thoiGian; // phút
     private int caloTieuThu;
     private String ngay;
+    private boolean checked;
+
+    public boolean isChecked() {
+        return checked;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
+    }
 
     public tapluyen_employ(int id, String tenBaiTap, int thoiGian, int caloTieuThu, String ngay) {
         this.id = id;
@@ -35,5 +44,3 @@ public class    tapluyen_employ {
     public void setNgay(String ngay) { this.ngay = ngay; }
 
 }
-
-

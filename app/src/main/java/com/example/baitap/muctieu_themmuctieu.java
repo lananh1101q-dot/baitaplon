@@ -17,7 +17,7 @@ import java.util.Locale;
 public class muctieu_themmuctieu  extends AppCompatActivity {
     EditText edtChieuCao, edtCanNang, edtTuoi, edtMucTieu;
     RadioButton radNam, radNu;
-    Button btnTiep;
+    Button btnTiep,ve;
     MucTieuDAO dao;
 
     @Override
@@ -28,10 +28,11 @@ public class muctieu_themmuctieu  extends AppCompatActivity {
         edtChieuCao = findViewById(R.id.chieucao);
         edtCanNang = findViewById(R.id.cannang);
         edtTuoi = findViewById(R.id.tuoi);
-        edtMucTieu = findViewById(R.id.muctieu);
+
         radNam = findViewById(R.id.nam);
         radNu = findViewById(R.id.nu);
         btnTiep = findViewById(R.id.tiep);
+        ve=findViewById(R.id.ve);
 
         // nếu intent có tenmuctieu từ màn chọn, gán vào edtMucTieu
         String tenPassed = getIntent().getStringExtra("tenmuctieu");
@@ -40,14 +41,15 @@ public class muctieu_themmuctieu  extends AppCompatActivity {
         }
 
         dao = new MucTieuDAO(this);
+        ve.setOnClickListener(v -> finish());
 
         btnTiep.setOnClickListener(v -> {
             String chieuStr = edtChieuCao.getText().toString().trim();
             String canStr = edtCanNang.getText().toString().trim();
             String tuoiStr = edtTuoi.getText().toString().trim();
-            String tenMucTieu = edtMucTieu.getText().toString().trim();
 
-            if (chieuStr.isEmpty() || canStr.isEmpty() || tuoiStr.isEmpty() || tenMucTieu.isEmpty()) {
+
+            if (chieuStr.isEmpty() || canStr.isEmpty() || tuoiStr.isEmpty() ) {
                 Toast.makeText(this, "Vui lòng nhập đủ thông tin", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -71,17 +73,15 @@ public class muctieu_themmuctieu  extends AppCompatActivity {
             // ngày lưu: yyyy-MM-dd (dễ query)
             String ngayDb = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
-            muctieu m = new muctieu(0, tenMucTieu, chieu, can, bmi, nangluong, luongnuoc, ngayDb);
-            long id = dao.insert(m);
-
-            if (id > 0) {
-                Toast.makeText(this, "Đã lưu mục tiêu", Toast.LENGTH_SHORT).show();
-                // mở màn hiển thị mục tiêu
-                startActivity(new Intent(this, muctieu_muctieu.class));
-                finish();
-            } else {
-                Toast.makeText(this, "Lưu thất bại", Toast.LENGTH_SHORT).show();
-            }
+            Intent intent = new Intent(this, muctieu_muctieu.class);
+            intent.putExtra("chieu", chieu);
+            intent.putExtra("can", can);
+            intent.putExtra("bmi", bmi);
+            intent.putExtra("nangluong", nangluong);
+            intent.putExtra("luongnuoc", luongnuoc);
+            intent.putExtra("ngayDb", ngayDb);
+            startActivity(intent);
+            finish();
         });
     }
 }

@@ -11,6 +11,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import java.util.Calendar;
 
 public class UongNuocActivity extends AppCompatActivity {
@@ -48,6 +50,25 @@ public class UongNuocActivity extends AppCompatActivity {
             } catch (NumberFormatException e) {
                 Toast.makeText(this, "Nhập số ml hợp lệ!", Toast.LENGTH_SHORT).show();
             }
+        });
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView2);
+        bottomNavigationView.setSelectedItemId(R.id.menu_uongnuoc);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.menu_muctieu) {
+                startActivity(new Intent(this, MucTieuActivity.class));
+                return true;
+            } else if (id == R.id.menu_tapluyen) {
+                startActivity(new Intent(this, tapluyen.class));
+                return true;
+            } else if (id == R.id.menu_thongke) {
+                startActivity(new Intent(this, thongke.class));
+                return true;
+            }else if (id == R.id.menu_uongnuoc) {
+                //startActivity(new Intent(this, UongNuocActivity.class));
+                return true;
+            }
+            return false;
         });
     }
 

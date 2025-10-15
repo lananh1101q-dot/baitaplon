@@ -1,6 +1,7 @@
 package com.example.baitap;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -97,4 +98,14 @@ public class database extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public boolean isDatabaseEmpty() {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT COUNT(*) FROM tapluyen", null);
+        int count = 0;
+        if (c.moveToFirst()) {
+            count = c.getInt(0);
+        }
+        c.close();
+        return count == 0;
+    }
 }

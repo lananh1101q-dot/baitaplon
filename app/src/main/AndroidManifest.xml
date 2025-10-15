@@ -29,7 +29,8 @@
 
         <activity android:name=".muctieu_themmuctieu"></activity>
         <activity android:name=".tapluyen_thembaitap"></activity>
-        <activity android:name=".UongNuocActivity" />
+
+        <activity android:name=".UongNuocActivity"></activity>
 
 
 
