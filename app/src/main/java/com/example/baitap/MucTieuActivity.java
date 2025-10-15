@@ -32,6 +32,10 @@ public class MucTieuActivity extends AppCompatActivity{
         txtNgay = findViewById(R.id.ngay);
         btnMucTieu = findViewById(R.id.btmuctieu);
 
+        // Tự động tạo dữ liệu mẫu nếu database trống
+        database db = new database(this);
+        db.autoSeedIfEmpty();
+
         dao = new MucTieuDAO(this);
         loadLatest();
 

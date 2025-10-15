@@ -44,6 +44,10 @@ public class tapluyen extends AppCompatActivity {
         db = new database(this);
 
 
+        // Tự động tạo dữ liệu mẫu nếu database trống
+        database db = new database(this);
+        db.autoSeedIfEmpty();
+
         dao = new TapLuyenDAO(this);
         list = dao.getAll();
 
