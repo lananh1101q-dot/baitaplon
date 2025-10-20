@@ -42,6 +42,24 @@ public class TapLuyenDAO {
         db.delete("tapluyen", "id=?", new String[]{String.valueOf(id)});
         db.close();
     }
+    public ArrayList<tapluyen_employ> getByDate(String ngay) {
+        ArrayList<tapluyen_employ> list = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM tapluyen WHERE ngay=? ORDER BY id DESC", new String[]{ngay});
+        while (c.moveToNext()) {
+            list.add(new tapluyen_employ(
+                    c.getInt(0),
+                    c.getString(1),
+                    c.getInt(2),
+                    c.getInt(3),
+                    c.getString(4)
+            ));
+        }
+        c.close(); db.close();
+        return list;
+    }
+
+
 
     public ArrayList<tapluyen_employ> getAll() {
         ArrayList<tapluyen_employ> list = new ArrayList<>();

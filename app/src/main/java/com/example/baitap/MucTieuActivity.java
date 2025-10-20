@@ -55,6 +55,10 @@ public class MucTieuActivity extends AppCompatActivity{
                 startActivity(new Intent(this, thongke.class));
                 return true;
             }
+            else if (id == R.id.menu_uongnuoc) {
+                startActivity(new Intent(this, UongNuocActivity.class));
+                return true;
+            }
             return false;
         });
 

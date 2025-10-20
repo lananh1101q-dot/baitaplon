@@ -61,6 +61,21 @@ public class database extends SQLiteOpenHelper {
                 "tenthucan TEXT, " +
                 "buaan TEXT" +
                 ")");
+        db.execSQL("CREATE TABLE IF NOT EXISTS lichnhacnuoc (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "thoigian TEXT, " +
+                "noidung TEXT, " +
+                "kichhoat INTEGER DEFAULT 1" +
+                ")");
+
+        // Bảng lịch sử uống nước
+        db.execSQL("CREATE TABLE IF NOT EXISTS lichsu_uongnuoc (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "ngay TEXT DEFAULT (date('now')), " +
+                "gio TEXT, " +
+                "luong INTEGER, " +
+                "ghichu TEXT" +
+                ")");
     }
 
     @Override
@@ -72,5 +87,24 @@ public class database extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS uongnuoc");
         db.execSQL("DROP TABLE IF EXISTS thongke");
         onCreate(db);
+        db.execSQL("DROP TABLE IF EXISTS muctieu");
+        db.execSQL("DROP TABLE IF EXISTS tapluyen");
+        db.execSQL("DROP TABLE IF EXISTS thucan");
+        db.execSQL("DROP TABLE IF EXISTS uongnuoc");
+        db.execSQL("DROP TABLE IF EXISTS thongke");
+        db.execSQL("DROP TABLE IF EXISTS lichnhacnuoc");
+        db.execSQL("DROP TABLE IF EXISTS lichsu_uongnuoc");
+        onCreate(db);
+    }
+
+    public boolean isDatabaseEmpty() {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT COUNT(*) FROM tapluyen", null);
+        int count = 0;
+        if (c.moveToFirst()) {
+            count = c.getInt(0);
+        }
+        c.close();
+        return count == 0;
     }
 }

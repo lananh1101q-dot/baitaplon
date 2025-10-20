@@ -11,6 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Baitap">
+        <receiver android:name=".ThongBaoReceiver" />
+
         <activity
             android:name=".tapluyen"
             android:exported="true">
@@ -28,6 +30,11 @@
         <activity android:name=".muctieu_themmuctieu"></activity>
         <activity android:name=".tapluyen_thembaitap"></activity>
         <activity android:name=".thongke"></activity>
+
+        <activity android:name=".UongNuocActivity"></activity>
+
+
+
 
     </application>
 
