@@ -16,7 +16,7 @@ import java.util.Random;
 public class database extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "suckhoe.db";
-    private static final int DATABASE_VERSION = 5; // tăng version nếu thay đổi schema
+    private static final int DATABASE_VERSION = 6; // tăng version nếu thay đổi schema
     public static final String TBL_LOAI = "loai";
     public static final String TBL_MONAN = "monan";
     public static final String TBL_FOODLOG = "food_log";
@@ -142,12 +142,49 @@ private void seedInitialData(SQLiteDatabase db) {
     insertMonAn(db, "Sườn chay", 150, (int) idChay);
     insertMonAn(db, "Đậu hũ chiên", 180, (int) idChay);
     insertMonAn(db, "Giò chay", 200, (int) idChay);
+    insertMonAn(db, "Rau xào thập cẩm ", 85, (int) idChay);
+    insertMonAn(db, "Cơm trắng", 130, (int) idChay);
+    insertMonAn(db, "Canh bí đỏ", 60, (int) idChay);
+    insertMonAn(db, "Bún chay", 120, (int) idChay);
+    insertMonAn(db, "Chả chay", 160, (int) idChay);
+    insertMonAn(db, "Nấm xào đậu hũ", 100, (int) idChay);
+    insertMonAn(db, "Miến xào chay", 140, (int) idChay);
+    insertMonAn(db, "Đậu que luộc", 35, (int) idChay);
+    insertMonAn(db, "Súp rau củ", 50, (int) idChay);
     insertMonAn(db, "Cơm gà chiên", 600, (int) idNhieu);
     insertMonAn(db, "Bánh mì bơ đường", 320, (int) idNhieu);
+    insertMonAn(db, "Thịt ba chỉ quay", 520, (int) idNhieu);
+    insertMonAn(db, "Gà rán", 480, (int) idNhieu);
+    insertMonAn(db, "Pizza phô mai", 270, (int) idNhieu);
+    insertMonAn(db, "Hamburger bò", 295, (int) idNhieu);
+    insertMonAn(db, "Khoai tây chiên", 312, (int) idNhieu);
+    insertMonAn(db, "Bánh mì kẹp trứng", 250, (int) idNhieu);
+    insertMonAn(db, "Cơm chiên trứng", 230, (int) idNhieu);
+    insertMonAn(db, "Sườn nướng mật ong", 360, (int) idNhieu);
+    insertMonAn(db, "Bánh ngọt kem bơ", 410, (int) idNhieu);
+    insertMonAn(db, "Xúc xích chiên", 300, (int) idNhieu);
     insertMonAn(db, "Salad rau", 80, (int) idIt);
     insertMonAn(db, "Sữa chua không đường", 90, (int) idIt);
+    insertMonAn(db, "Rau luộc", 30, (int) idIt);
+    insertMonAn(db, "Dưa leo", 16, (int) idIt);
+    insertMonAn(db, "Cà chua", 18, (int) idIt);
+    insertMonAn(db, "Canh rau ngót", 45, (int) idIt);
+    insertMonAn(db, "Trứng luộc", 155, (int) idIt);
+    insertMonAn(db, "Cá hấp", 120, (int) idIt);
+    insertMonAn(db, "Ức gà luộc", 165, (int) idIt);
+    insertMonAn(db, "Cháo trắng", 45, (int) idIt);
+    insertMonAn(db, "Nước ép cam", 50, (int) idIt);
     insertMonAn(db, "Bánh mì", 200, (int) idBinh);
     insertMonAn(db, "Phở bò", 350, (int) idBinh);
+    insertMonAn(db, "Cơm tấm", 200, (int) idBinh);
+    insertMonAn(db, "Trứng chiên", 210, (int) idBinh);
+    insertMonAn(db, "Thịt kho trứng", 250, (int) idBinh);
+    insertMonAn(db, "Canh chua cá", 120, (int) idBinh);
+    insertMonAn(db, "Bún bò Huế", 220, (int) idBinh);
+    insertMonAn(db, "Cơm gà xối mỡ", 240, (int) idBinh);
+    insertMonAn(db, "Cá kho tộ", 200, (int) idBinh);
+    insertMonAn(db, "Bánh mì thịt", 230, (int) idBinh);
+    insertMonAn(db, "Miến xào bò", 190, (int) idBinh);
 }
 
 private long insertLoai(SQLiteDatabase db, String ten) {
@@ -292,7 +329,16 @@ public int getTongCaloNgay(String ngay) {
 
     public int getTongCaloHapThuTheoNgay(String ngay) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT SUM(calohapthu) FROM thucan WHERE ngay = ?", new String[]{ngay});
+
+        // JOIN bảng FOODLOG và MONAN để lấy tổng calo của món đã ăn trong ngày
+        Cursor c = db.rawQuery(
+                "SELECT SUM(m.calo * f.luot) AS tongCalo " +
+                        "FROM " + TBL_FOODLOG + " f " +
+                        "JOIN " + TBL_MONAN + " m ON f.monan_id = m.id " +
+                        "WHERE f.ngay = ?",
+                new String[]{ngay}
+        );
+
         int tong = 0;
         if (c.moveToFirst()) {
             tong = c.getInt(0);
@@ -329,8 +375,15 @@ public int getTongCaloNgay(String ngay) {
 
     public int getTongCaloHapThuTheoTuan(String ngayBatDau, String ngayKetThuc) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT SUM(calohapthu) FROM thucan WHERE ngay BETWEEN ? AND ?",
-            new String[]{ngayBatDau, ngayKetThuc});
+
+        Cursor c = db.rawQuery(
+                "SELECT SUM(m.calo * f.luot) AS tongCalo " +
+                        "FROM " + TBL_FOODLOG + " f " +
+                        "JOIN " + TBL_MONAN + " m ON f.monan_id = m.id " +
+                        "WHERE date(f.ngay) BETWEEN date(?) AND date(?)",
+                new String[]{ngayBatDau, ngayKetThuc}
+        );
+
         int tong = 0;
         if (c.moveToFirst()) {
             tong = c.getInt(0);
@@ -338,6 +391,7 @@ public int getTongCaloNgay(String ngay) {
         c.close();
         return tong;
     }
+
 
 
     public int getTongNuocUongTheoTuan(String ngayBatDau, String ngayKetThuc) {
@@ -367,8 +421,16 @@ public int getTongCaloNgay(String ngay) {
 
     public int getTongCaloHapThuTheoThang(String thang) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT SUM(calohapthu) FROM thucan WHERE strftime('%Y-%m', ngay) = ?",
-            new String[]{thang});
+
+        // Ví dụ: thang = "2025-10" để lọc các ngày trong tháng 10/2025
+        Cursor c = db.rawQuery(
+                "SELECT SUM(m.calo * f.luot) AS tongCalo " +
+                        "FROM " + TBL_FOODLOG + " f " +
+                        "JOIN " + TBL_MONAN + " m ON f.monan_id = m.id " +
+                        "WHERE strftime('%Y-%m', f.ngay) = ?",
+                new String[]{thang}
+        );
+
         int tong = 0;
         if (c.moveToFirst()) {
             tong = c.getInt(0);
@@ -376,6 +438,7 @@ public int getTongCaloNgay(String ngay) {
         c.close();
         return tong;
     }
+
 
     // Lấy tổng nước uống theo tháng
     public int getTongNuocUongTheoThang(String thang) {
