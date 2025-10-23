@@ -419,19 +419,19 @@ public int getTongCaloNgay(String ngay) {
         }
 
         // 2. Tạo dữ liệu cho 90 ngày gần nhất (3 tháng)
-        String[] tenBaiTap = {
-            "Chạy bộ", "Đạp xe", "Hít đất", "Gập bụng", "Plank", "Yoga", "Bơi lội",
-            "Nhảy dây", "Squat", "Lunges", "Đẩy tạ", "Kéo xà", "Nâng tạ", "Aerobic",
-            "Zumba", "Kickboxing", "Leo núi", "Tennis", "Cầu lông", "Đá bóng"
-        };
-        int[] thoiGianBaiTap = {
-            30, 45, 20, 15, 10, 60, 40, 25, 20, 25, 35, 30, 40, 50,
-            45, 55, 90, 60, 45, 60
-        };
-        int[] caloBaiTap = {
-            250, 400, 150, 120, 80, 200, 350, 300, 180, 200, 280, 250, 320, 380,
-            420, 450, 500, 450, 350, 480
-        };
+//        String[] tenBaiTap = {
+//            "Chạy bộ", "Đạp xe", "Hít đất", "Gập bụng", "Plank", "Yoga", "Bơi lội",
+//            "Nhảy dây", "Squat", "Lunges", "Đẩy tạ", "Kéo xà", "Nâng tạ", "Aerobic",
+//            "Zumba", "Kickboxing", "Leo núi", "Tennis", "Cầu lông", "Đá bóng"
+//        };
+//        int[] thoiGianBaiTap = {
+//            30, 45, 20, 15, 10, 60, 40, 25, 20, 25, 35, 30, 40, 50,
+//            45, 55, 90, 60, 45, 60
+//        };
+//        int[] caloBaiTap = {
+//            250, 400, 150, 120, 80, 200, 350, 300, 180, 200, 280, 250, 320, 380,
+//            420, 450, 500, 450, 350, 480
+//        };
 
 
         int[] luongNuocOptions = {200, 250, 300, 350, 400, 450, 500, 600};
@@ -455,15 +455,15 @@ public int getTongCaloNgay(String ngay) {
 
             // A. Thêm bài tập luyện (3-5 bài mỗi ngày)
             int soBaiTap = 3 + random.nextInt(3); // 3-5 bài
-            for (int j = 0; j < soBaiTap; j++) {
-                int idx = random.nextInt(tenBaiTap.length);
-                ContentValues cvTapLuyen = new ContentValues();
-                cvTapLuyen.put("tenbaitap", tenBaiTap[idx]);
-                cvTapLuyen.put("thoigian", thoiGianBaiTap[idx] + random.nextInt(10) - 5); // +/- 5 phút
-                cvTapLuyen.put("calotieuthu", caloBaiTap[idx] + random.nextInt(50) - 25); // +/- 25 calo
-                cvTapLuyen.put("ngay", ngay);
-                db.insert("tapluyen", null, cvTapLuyen);
-            }
+//            for (int j = 0; j < soBaiTap; j++) {
+//                int idx = random.nextInt(tenBaiTap.length);
+//                ContentValues cvTapLuyen = new ContentValues();
+//                cvTapLuyen.put("tenbaitap", tenBaiTap[idx]);
+//                cvTapLuyen.put("thoigian", thoiGianBaiTap[idx] + random.nextInt(10) - 5); // +/- 5 phút
+//                cvTapLuyen.put("calotieuthu", caloBaiTap[idx] + random.nextInt(50) - 25); // +/- 25 calo
+//                cvTapLuyen.put("ngay", ngay);
+//                db.insert("tapluyen", null, cvTapLuyen);
+//            }
 
 
 

@@ -78,6 +78,9 @@ public class UongNuocActivity extends AppCompatActivity {
                 } else if (id == R.id.menu_muctieu) {
                     startActivity(new Intent(UongNuocActivity.this, MucTieuActivity.class));
                 }
+             else if (id == R.id.menu_thucan) {
+                startActivity(new Intent(UongNuocActivity.this, thucan_activity.class));
+            }
                 overridePendingTransition(0,0);
                 return true;
             }

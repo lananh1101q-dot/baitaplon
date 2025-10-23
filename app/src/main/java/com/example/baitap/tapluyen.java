@@ -2,11 +2,14 @@ package com.example.baitap;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +21,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -29,8 +33,10 @@ public class tapluyen extends AppCompatActivity {
     private tapluyen_adapter adapter;
     private TapLuyenDAO dao;
     private ArrayList<tapluyen_employ> list;
-    private Button btnThem, btnChon;
+    private Button btnThem;
     private database db;
+    TextView txtNgay,tcalo;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,17 +45,19 @@ public class tapluyen extends AppCompatActivity {
 
         listview = findViewById(R.id.dstapluyen);
         btnThem = findViewById(R.id.thembaitap);
-        btnChon = findViewById(R.id.chon);
+        tcalo = findViewById(R.id.txtTongCalo);
+
 
         db = new database(this);
 
 
         // Tự động tạo dữ liệu mẫu nếu database trống
-        database db = new database(this);
-        db.autoSeedIfEmpty();
+//        database db = new database(this);
+//        db.autoSeedIfEmpty();
 
         dao = new TapLuyenDAO(this);
-        list = dao.getAll();
+        list = new ArrayList<>();
+
 
         adapter = new tapluyen_adapter(this, R.layout.activity_tapluyen_listitem, list, dao);
         listview = findViewById(R.id.dstapluyen);
@@ -70,8 +78,11 @@ public class tapluyen extends AppCompatActivity {
             }
         });
 
-        TextView txtNgay = findViewById(R.id.txtNgay);
+         txtNgay = findViewById(R.id.txtNgay);
         txtNgay.setText(getToday());
+        loadTodayData();
+        refreshIfNewDay();
+
 
         // Nút thêm bài tập
         btnThem.setOnClickListener(v -> {
@@ -80,22 +91,9 @@ public class tapluyen extends AppCompatActivity {
         });
 
         // ✅ Nút chọn bài tập
-        btnChon.setOnClickListener(v -> {
-            ArrayList<tapluyen_employ> selected = adapter.getSelectedList();
-            if (selected.isEmpty()) {Toast.makeText(this, "Bạn chưa chọn bài tập nào!", Toast.LENGTH_SHORT).show();
-                return;
-            }
 
-            int tongCalo = 0;
-            for (tapluyen_employ t : selected) {
-                tongCalo += t.getCaloTieuThu();
-            }
 
-            Toast.makeText(this, "Bạn đã tiêu hao tổng năng lượng: " + tongCalo + " kcal", Toast.LENGTH_LONG).show();
 
-            // ✅ Ghi dữ liệu sang bảng thống kê (cộng dồn nếu đã có)
-
-        });
 
 
         // Thanh điều hướng dưới
@@ -115,6 +113,9 @@ public class tapluyen extends AppCompatActivity {
                 startActivity(new Intent(this, UongNuocActivity.class));
                 return true;
             }
+            else if (id == R.id.menu_thucan) {
+                startActivity(new Intent(this, thucan_activity.class));
+            }
             return false;
         });
     }
@@ -122,10 +123,42 @@ public class tapluyen extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        adapter.refreshData(dao.getAll());
+        adapter.refreshData(dao.getByDate(getToday()));
+        updateTongCaloHomNay();
     }
 
     private String getToday() {
-        return new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+        return new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
     }
+
+    // ---- Load dữ liệu bài tập trong ngày ----
+    private void loadTodayData() {
+        updateTongCaloHomNay();
+        String today = getToday();
+        txtNgay.setText(today);
+        list = dao.getByDate(today);
+        adapter = new tapluyen_adapter(this, R.layout.activity_tapluyen_listitem, list, dao);
+        listview.setAdapter(adapter);
+        tcalo.setText("Tổng năng lượng hôm nay: 0 kcal");
+    }
+    // ---- Làm mới khi sang ngày mới ----
+    private void refreshIfNewDay() {
+        SharedPreferences prefs = getSharedPreferences("TapLuyenPrefs", MODE_PRIVATE);
+        String last = prefs.getString("lastDate", "");
+        String today = getToday();
+        if (!today.equals(last)) {
+            prefs.edit().putString("lastDate", today).apply();
+            loadTodayData();
+        } else {
+            adapter.refreshData(dao.getByDate(today));
+        }
+    }
+    public void updateTongCaloHomNay() {
+        ArrayList<tapluyen_employ> listToday = dao.getByDate(getToday());
+        int tong = 0;
+        for (tapluyen_employ t : listToday) tong += t.getCaloTieuThu();
+        tcalo.setText("Tổng năng lượng hôm nay: " + tong + " kcal");
+
+    }
+
 }

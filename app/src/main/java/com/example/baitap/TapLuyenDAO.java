@@ -25,6 +25,25 @@ public class TapLuyenDAO {
         db.insert("tapluyen", null, values);
         db.close();
     }
+    public long insertAuto(String tenBaiTap, int thoiGianPhut, String ngay) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        long result = -1;
+        try {
+            // Tính calo tự động
+            int caloTieuThu = tapluyen_DanhMucBaiTap.tinhCalo(tenBaiTap, thoiGianPhut);
+
+            ContentValues values = new ContentValues();
+            values.put("tenbaitap", tenBaiTap);
+            values.put("thoigian", thoiGianPhut);
+            values.put("calotieuthu", caloTieuThu);
+            values.put("ngay", ngay);
+
+            result = db.insert("tapluyen", null, values);
+        } finally {
+            db.close();
+        }
+        return result;
+    }
 
     public void update(tapluyen_employ tl) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();

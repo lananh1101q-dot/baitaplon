@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.baitap.thucan_adapter;
 import com.example.baitap.database;
 import com.example.baitap.model_FoodLog;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -77,6 +78,30 @@ public class thucan_activity extends AppCompatActivity {
                     .setNegativeButton("Không", null)
                     .show();
             return true;
+        });
+        // Thanh điều hướng dưới
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView2);
+        bottomNavigationView.setSelectedItemId(R.id.menu_tapluyen);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.menu_muctieu) {
+                startActivity(new Intent(this, MucTieuActivity.class));
+                return true;
+            } else if (id == R.id.menu_tapluyen) {
+                startActivity(new Intent(this, tapluyen.class));
+                return true;
+            } else if (id == R.id.menu_thongke) {
+                startActivity(new Intent(this, thongke.class));
+                return true;
+            }else if (id == R.id.menu_uongnuoc) {
+                startActivity(new Intent(this, UongNuocActivity.class));
+                return true;
+            }
+            else if (id == R.id.menu_thucan) {
+
+                return true;
+            }
+            return false;
         });
     }
 
