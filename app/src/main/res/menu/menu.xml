@@ -5,13 +5,14 @@
 
         android:id="@+id/menu_uongnuoc"
         android:title="Uống nước "
-        android:icon="@drawable/uongnuoc"
+        android:icon="@android:drawable/ic_menu_camera"
+
         />
     <item
 
         android:id="@+id/menu_thucan"
         android:title="Thức Ăn"
-        android:icon="@drawable/thuca"/>
+        android:icon="@drawable/thuan"/>
     <item
 
         android:id="@+id/menu_tapluyen"
