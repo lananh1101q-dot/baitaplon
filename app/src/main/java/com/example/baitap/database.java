@@ -16,7 +16,7 @@ import java.util.Random;
 public class database extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "suckhoe.db";
-    private static final int DATABASE_VERSION = 4; // tăng version nếu thay đổi schema
+    private static final int DATABASE_VERSION = 5; // tăng version nếu thay đổi schema
     public static final String TBL_LOAI = "loai";
     public static final String TBL_MONAN = "monan";
     public static final String TBL_FOODLOG = "food_log";
@@ -30,7 +30,10 @@ public class database extends SQLiteOpenHelper {
         // Bảng mục tiêu
         db.execSQL("CREATE TABLE IF NOT EXISTS muctieu (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                " user_id INTEGER,"+
                 "tenmuctieu TEXT, " +
+                "gioitinh TEXT,"+
+                "tuoi INTEGER,"+
                 "chieucao REAL, " +
                 "cannang REAL, " +
                 "bmi REAL, " +
