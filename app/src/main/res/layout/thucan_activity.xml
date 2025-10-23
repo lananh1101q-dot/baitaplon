@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FAFAFA">
+
+    <!-- Tiêu đề ngày hiện tại -->
+    <TextView
+        android:id="@+id/tvNgay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hôm nay: 24/10/2025"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#212121"
+        android:layout_gravity="center_horizontal"
+        android:paddingBottom="8dp" />
+
+    <!-- Tổng lượng calo -->
+    <TextView
+        android:id="@+id/tvTongCalo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tổng: 0 kcal"
+        android:textSize="18sp"
+        android:textColor="#FF5722"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Nút chọn món ăn -->
+    <Button
+        android:id="@+id/btnThemMon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Thêm món ăn"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:backgroundTint="#4CAF50"
+        android:textColor="#FFFFFF"
+        android:padding="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp" />
+
+    <ListView
+        android:id="@+id/lv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"></ListView>
+
+</LinearLayout>

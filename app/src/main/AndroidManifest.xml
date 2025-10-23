@@ -23,8 +23,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
+<activity android:name=".thucan_activity"/>
+        <activity android:name=".thucan_them" />
+        <activity android:name=".thucan_sua" />
         <activity android:name=".MucTieuActivity"></activity>
         <activity android:name=".muctieu_muctieu"></activity>
 
