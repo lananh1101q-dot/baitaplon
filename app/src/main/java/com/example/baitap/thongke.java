@@ -97,6 +97,10 @@ public class thongke extends AppCompatActivity {
             startActivity(new Intent(this, thucan_activity.class));
             return true;
         }
+            else if (id == R.id.menu_uongnuoc) {
+                startActivity(new Intent(this, UongNuocActivity.class));
+                return true;
+            }
             return false;
         });
     }
