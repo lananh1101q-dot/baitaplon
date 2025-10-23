@@ -6,7 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class UongNuocDAO {
@@ -40,5 +42,21 @@ public class UongNuocDAO {
         c.close();
         db.close();
         return tong;
+    }
+
+    // Lấy lịch sử uống nước hôm nay
+    public List<String> getLichSuHomNay() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String ngay = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+        Cursor c = db.rawQuery("SELECT gio, luongnuoc FROM uongnuoc WHERE ngay = ? ORDER BY gio DESC", new String[]{ngay});
+        List<String> list = new ArrayList<>();
+        while (c.moveToNext()) {
+            String gio = c.getString(0);
+            int ml = c.getInt(1);
+            list.add(gio + " - " + ml + " ml");
+        }
+        c.close();
+        db.close();
+        return list;
     }
 }

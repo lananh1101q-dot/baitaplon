@@ -153,7 +153,7 @@ public class database extends SQLiteOpenHelper {
 
     public int getTongCaloTieuThuTheoTuan(String ngayBatDau, String ngayKetThuc) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT SUM(calotieuthu) FROM tapluyen WHERE ngay BETWEEN ? AND ?", 
+        Cursor c = db.rawQuery("SELECT SUM(calotieuthu) FROM tapluyen WHERE ngay BETWEEN ? AND ?",
             new String[]{ngayBatDau, ngayKetThuc});
         int tong = 0;
         if (c.moveToFirst()) {
@@ -166,7 +166,7 @@ public class database extends SQLiteOpenHelper {
 
     public int getTongCaloHapThuTheoTuan(String ngayBatDau, String ngayKetThuc) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT SUM(calohapthu) FROM thucan WHERE ngay BETWEEN ? AND ?", 
+        Cursor c = db.rawQuery("SELECT SUM(calohapthu) FROM thucan WHERE ngay BETWEEN ? AND ?",
             new String[]{ngayBatDau, ngayKetThuc});
         int tong = 0;
         if (c.moveToFirst()) {
@@ -179,7 +179,7 @@ public class database extends SQLiteOpenHelper {
 
     public int getTongNuocUongTheoTuan(String ngayBatDau, String ngayKetThuc) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT SUM(luongnuoc) FROM uongnuoc WHERE ngay BETWEEN ? AND ?", 
+        Cursor c = db.rawQuery("SELECT SUM(luongnuoc) FROM uongnuoc WHERE ngay BETWEEN ? AND ?",
             new String[]{ngayBatDau, ngayKetThuc});
         int tong = 0;
         if (c.moveToFirst()) {
@@ -191,7 +191,7 @@ public class database extends SQLiteOpenHelper {
 
     public int getTongCaloTieuThuTheoThang(String thang) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT SUM(calotieuthu) FROM tapluyen WHERE strftime('%Y-%m', ngay) = ?", 
+        Cursor c = db.rawQuery("SELECT SUM(calotieuthu) FROM tapluyen WHERE strftime('%Y-%m', ngay) = ?",
             new String[]{thang});
         int tong = 0;
         if (c.moveToFirst()) {
@@ -204,7 +204,7 @@ public class database extends SQLiteOpenHelper {
 
     public int getTongCaloHapThuTheoThang(String thang) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT SUM(calohapthu) FROM thucan WHERE strftime('%Y-%m', ngay) = ?", 
+        Cursor c = db.rawQuery("SELECT SUM(calohapthu) FROM thucan WHERE strftime('%Y-%m', ngay) = ?",
             new String[]{thang});
         int tong = 0;
         if (c.moveToFirst()) {
@@ -217,7 +217,7 @@ public class database extends SQLiteOpenHelper {
     // Lấy tổng nước uống theo tháng
     public int getTongNuocUongTheoThang(String thang) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT SUM(luongnuoc) FROM uongnuoc WHERE strftime('%Y-%m', ngay) = ?", 
+        Cursor c = db.rawQuery("SELECT SUM(luongnuoc) FROM uongnuoc WHERE strftime('%Y-%m', ngay) = ?",
             new String[]{thang});
         int tong = 0;
         if (c.moveToFirst()) {
@@ -228,25 +228,16 @@ public class database extends SQLiteOpenHelper {
     }
 
     // ===== SEED DATA - TẠO DỮ LIỆU MẪU TỰ ĐỘNG =====
-    
+
     // Kiểm tra xem đã có dữ liệu chưa
-    public boolean isDatabaseEmpty() {
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT COUNT(*) FROM tapluyen", null);
-        int count = 0;
-        if (c.moveToFirst()) {
-            count = c.getInt(0);
-        }
-        c.close();
-        return count == 0;
-    }
+
 
     // Tạo dữ liệu mẫu cho 90 ngày (3 tháng)
     public void seedData() {
         SQLiteDatabase db = getWritableDatabase();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
         Random random = new Random();
-        
+
         // 1. Thêm mục tiêu (nếu chưa có)
         Cursor cMucTieu = db.rawQuery("SELECT COUNT(*) FROM muctieu", null);
         int countMucTieu = 0;
@@ -254,7 +245,7 @@ public class database extends SQLiteOpenHelper {
             countMucTieu = cMucTieu.getInt(0);
         }
         cMucTieu.close();
-        
+
         if (countMucTieu == 0) {
             ContentValues cvMucTieu = new ContentValues();
             cvMucTieu.put("tenmuctieu", "Giảm cân");
@@ -266,10 +257,10 @@ public class database extends SQLiteOpenHelper {
             cvMucTieu.put("ngay", sdf.format(Calendar.getInstance().getTime()));
             db.insert("muctieu", null, cvMucTieu);
         }
-        
+
         // 2. Tạo dữ liệu cho 90 ngày gần nhất (3 tháng)
         String[] tenBaiTap = {
-            "Chạy bộ", "Đạp xe", "Hít đất", "Gập bụng", "Plank", "Yoga", "Bơi lội", 
+            "Chạy bộ", "Đạp xe", "Hít đất", "Gập bụng", "Plank", "Yoga", "Bơi lội",
             "Nhảy dây", "Squat", "Lunges", "Đẩy tạ", "Kéo xà", "Nâng tạ", "Aerobic",
             "Zumba", "Kickboxing", "Leo núi", "Tennis", "Cầu lông", "Đá bóng"
         };
@@ -281,7 +272,7 @@ public class database extends SQLiteOpenHelper {
             250, 400, 150, 120, 80, 200, 350, 300, 180, 200, 280, 250, 320, 380,
             420, 450, 500, 450, 350, 480
         };
-        
+
         String[][] thucAn = {
             // Sáng (0-9)
             {"Phở bò", "Sáng", "350"},
@@ -294,7 +285,7 @@ public class database extends SQLiteOpenHelper {
             {"Bánh bao", "Sáng", "240"},
             {"Mì trứng", "Sáng", "330"},
             {"Cơm tấm", "Sáng", "400"},
-            
+
             // Trưa (10-24)
             {"Cơm rang", "Trưa", "450"},
             {"Cơm gà", "Trưa", "500"},
@@ -311,7 +302,7 @@ public class database extends SQLiteOpenHelper {
             {"Cơm gà xối mỡ", "Trưa", "510"},
             {"Bún thịt nướng", "Trưa", "470"},
             {"Cơm rang hải sản", "Trưa", "530"},
-            
+
             // Tối (25-39)
             {"Salad", "Tối", "200"},
             {"Cơm canh", "Tối", "380"},
@@ -329,14 +320,14 @@ public class database extends SQLiteOpenHelper {
             {"Cơm chiên", "Tối", "420"},
             {"Mì gói xào", "Tối", "330"}
         };
-        
+
         int[] luongNuocOptions = {200, 250, 300, 350, 400, 450, 500, 600};
-        
+
         for (int i = 0; i < 90; i++) {
             Calendar cal = Calendar.getInstance();
             cal.add(Calendar.DAY_OF_MONTH, -i);
             String ngay = sdf.format(cal.getTime());
-            
+
             // Kiểm tra xem ngày này đã có dữ liệu chưa
             Cursor cCheck = db.rawQuery("SELECT COUNT(*) FROM tapluyen WHERE ngay = ?", new String[]{ngay});
             int existingData = 0;
@@ -344,11 +335,11 @@ public class database extends SQLiteOpenHelper {
                 existingData = cCheck.getInt(0);
             }
             cCheck.close();
-            
+
             if (existingData > 0) {
                 continue; // Đã có dữ liệu, bỏ qua ngày này
             }
-            
+
             // A. Thêm bài tập luyện (3-5 bài mỗi ngày)
             int soBaiTap = 3 + random.nextInt(3); // 3-5 bài
             for (int j = 0; j < soBaiTap; j++) {
@@ -360,7 +351,7 @@ public class database extends SQLiteOpenHelper {
                 cvTapLuyen.put("ngay", ngay);
                 db.insert("tapluyen", null, cvTapLuyen);
             }
-            
+
             // B. Thêm thức ăn (3-4 bữa mỗi ngày: sáng, trưa, tối, và đôi khi ăn vặt)
             // Bữa sáng
             int idxSang = random.nextInt(10); // 0-9: các món sáng
@@ -370,7 +361,7 @@ public class database extends SQLiteOpenHelper {
             cvSang.put("calohapthu", Integer.parseInt(thucAn[idxSang][2]) + random.nextInt(40) - 20);
             cvSang.put("ngay", ngay);
             db.insert("thucan", null, cvSang);
-            
+
             // Bữa trưa
             int idxTrua = 10 + random.nextInt(15); // 10-24: các món trưa
             ContentValues cvTrua = new ContentValues();
@@ -379,7 +370,7 @@ public class database extends SQLiteOpenHelper {
             cvTrua.put("calohapthu", Integer.parseInt(thucAn[idxTrua][2]) + random.nextInt(50) - 25);
             cvTrua.put("ngay", ngay);
             db.insert("thucan", null, cvTrua);
-            
+
             // Bữa tối
             int idxToi = 25 + random.nextInt(15); // 25-39: các món tối
             ContentValues cvToi = new ContentValues();
@@ -388,7 +379,7 @@ public class database extends SQLiteOpenHelper {
             cvToi.put("calohapthu", Integer.parseInt(thucAn[idxToi][2]) + random.nextInt(40) - 20);
             cvToi.put("ngay", ngay);
             db.insert("thucan", null, cvToi);
-            
+
             // Đôi khi thêm bữa phụ (30% xác suất)
             if (random.nextInt(10) < 3) {
                 ContentValues cvPhu = new ContentValues();
@@ -398,7 +389,7 @@ public class database extends SQLiteOpenHelper {
                 cvPhu.put("ngay", ngay);
                 db.insert("thucan", null, cvPhu);
             }
-            
+
             // C. Thêm lượng nước uống (5-8 lần mỗi ngày)
             int soLanUong = 5 + random.nextInt(4); // 5-8 lần
             for (int j = 0; j < soLanUong; j++) {
@@ -408,7 +399,7 @@ public class database extends SQLiteOpenHelper {
                 db.insert("uongnuoc", null, cvUongNuoc);
             }
         }
-        
+
         db.close();
     }
 
