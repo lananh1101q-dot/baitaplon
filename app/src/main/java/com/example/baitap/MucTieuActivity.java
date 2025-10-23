@@ -43,7 +43,7 @@ public class MucTieuActivity extends AppCompatActivity {
         nav.setSelectedItemId(R.id.menu_muctieu);
         nav.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.menu_muctieu) return true;
-            if (item.getItemId() == R.id.menu_tapluyen) startActivity(new Intent(this, tapluyen.class));
+            else if (item.getItemId() == R.id.menu_tapluyen) startActivity(new Intent(this, tapluyen.class));
             else if (item.getItemId() == R.id.menu_thongke) startActivity(new Intent(this, thongke.class));
             else if (item.getItemId() == R.id.menu_uongnuoc) startActivity(new Intent(this, UongNuocActivity.class));
             else if (item.getItemId() == R.id.menu_thucan) startActivity(new Intent(this, thucan_activity.class));
