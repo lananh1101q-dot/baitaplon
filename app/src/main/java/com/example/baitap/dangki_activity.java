@@ -46,14 +46,17 @@ public class dangki_activity extends AppCompatActivity {
             ContentValues values = new ContentValues();
             values.put("tendangnhap", user);
             values.put("matkhau", pass);
-            db.insert("taikhoan", null, values);
+            long newId = db.insert("taikhoan", null, values);
             db.close();
 
             SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-            prefs.edit().putString("currentUser", user).apply();
+            prefs.edit()
+                    .putString("currentUser", user)
+                    .putInt("user_id", (int) newId)
+                    .apply();
 
             Toast.makeText(this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(this, MucTieuActivity.class));
+            startActivity(new Intent(this, muctieu_themmuctieu.class));
             finish();
         });
     }

@@ -28,24 +28,21 @@ public class database extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         // Bảng tài khoản người dùng
-        db.execSQL("CREATE TABLE IF NOT EXISTS taikhoan (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "tendangnhap TEXT UNIQUE, " +
-                "matkhau TEXT)");
+
         // Bảng mục tiêu
-        db.execSQL("CREATE TABLE IF NOT EXISTS muctieu (" +
+        db.execSQL("CREATE TABLE muctieu (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                " user_id INTEGER,"+
+                "user_id INTEGER, " +
                 "tenmuctieu TEXT, " +
-                "gioitinh TEXT,"+
-                "tuoi INTEGER,"+
+                "gioitinh TEXT, " +
+                "tuoi INTEGER, " +
                 "chieucao REAL, " +
                 "cannang REAL, " +
                 "bmi REAL, " +
                 "nangluong INTEGER, " +
                 "luongnuoc INTEGER, " +
-                "ngay TEXT DEFAULT (date('now'))" +
-                ")");
+                "ngay TEXT, " +
+                "FOREIGN KEY(user_id) REFERENCES taikhoan(id) ON DELETE CASCADE)");
 
         // Bảng tập luyện
         db.execSQL("CREATE TABLE IF NOT EXISTS tapluyen (" +

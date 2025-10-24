@@ -2,6 +2,7 @@ package com.example.baitap;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -144,7 +145,9 @@ public class thongke extends AppCompatActivity {
         int nuocUong = db.getTongNuocUongTheoNgay(ngay);
 
         // Lấy mục tiêu
+
         muctieu mt = mucTieuDAO.getLatest();
+
         int mucTieuCalo = (mt != null) ? mt.getNangLuong() : 2000;
         int mucTieuNuoc = (mt != null) ? mt.getLuongNuoc() : 2000;
 
@@ -178,7 +181,9 @@ public class thongke extends AppCompatActivity {
         int nuocUong = db.getTongNuocUongTheoTuan(ngayBatDau, ngayKetThuc);
 
         // Mục tiêu tuần = mục tiêu ngày * 7
+
         muctieu mt = mucTieuDAO.getLatest();
+
         int mucTieuCalo = (mt != null) ? mt.getNangLuong() * 7 : 14000;
         int mucTieuNuoc = (mt != null) ? mt.getLuongNuoc() * 7 : 14000;
 
@@ -202,7 +207,9 @@ public class thongke extends AppCompatActivity {
         int nuocUong = db.getTongNuocUongTheoThang(thang);
 
         // Mục tiêu tháng = mục tiêu ngày * 30
+
         muctieu mt = mucTieuDAO.getLatest();
+
         int mucTieuCalo = (mt != null) ? mt.getNangLuong() * 30 : 60000;
         int mucTieuNuoc = (mt != null) ? mt.getLuongNuoc() * 30 : 60000;
 

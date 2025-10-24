@@ -12,7 +12,7 @@
 
         android:id="@+id/menu_thucan"
         android:title="Thức Ăn"
-        android:icon="@drawable/ic_img"/>
+        />
     <item
 
         android:id="@+id/menu_tapluyen"

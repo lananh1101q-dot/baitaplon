@@ -36,8 +36,12 @@ public class dangnhap_activity extends AppCompatActivity {
             SQLiteDatabase db = new database(this).getReadableDatabase();
             Cursor c = db.rawQuery("SELECT * FROM taikhoan WHERE tendangnhap = ? AND matkhau = ?", new String[]{user, pass});
             if (c.moveToFirst()) {
+                int userId = c.getInt(c.getColumnIndexOrThrow("id"));
                 SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-                prefs.edit().putString("currentUser", user).apply();
+                prefs.edit()
+                        .putString("currentUser", user)
+                        .putInt("user_id", userId)
+                        .apply();
 
                 Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(this, MucTieuActivity.class));
