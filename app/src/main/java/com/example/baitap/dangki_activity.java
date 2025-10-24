@@ -56,7 +56,7 @@ public class dangki_activity extends AppCompatActivity {
                     .apply();
 
             Toast.makeText(this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(this, muctieu_themmuctieu.class));
+            startActivity(new Intent(this, dangnhap_activity.class));
             finish();
         });
     }

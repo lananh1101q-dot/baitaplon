@@ -16,7 +16,7 @@
 
         <receiver android:name=".ThongBaoReceiver" />
         <activity android:name=".dangki_activity" />
-        <activity android:name=".tapluyen" android:exported="true">
+        <activity android:name=".dangnhap_activity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -35,7 +35,7 @@
         <activity android:name=".thucan_sua" />
         <activity android:name=".MucTieuActivity" />
         <activity android:name=".muctieu_muctieu" />
-
+        <activity android:name=".tapluyen" />
         <activity android:name=".tapluyen_thembaitap" />
         <activity android:name=".thongke" />
         <activity android:name=".UongNuocActivity" />
