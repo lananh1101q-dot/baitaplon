@@ -1,6 +1,7 @@
 package com.example.baitap;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,10 +12,8 @@ import java.util.Locale;
 
 public class MucTieuActivity extends AppCompatActivity {
     TextView txtMucTieu, txtBmi, txtChieuCao, txtCanNang, txtNl, txtLuongNuoc, txtNgay;
-    Button btnMucTieu,btnDangXuat;
-
+    Button btnMucTieu, btnDangXuat;
     MucTieuDAO dao;
-    int currentUserId = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,30 +28,30 @@ public class MucTieuActivity extends AppCompatActivity {
         txtLuongNuoc = findViewById(R.id.luongnuoc);
         txtNgay = findViewById(R.id.ngay);
         btnMucTieu = findViewById(R.id.btmuctieu);
+        btnDangXuat = findViewById(R.id.btnDangXuat);
 
         dao = new MucTieuDAO(this);
-        loadLatest();
+
+        SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        String currentUser = prefs.getString("currentUser", null);
+        if (currentUser == null) {
+            Toast.makeText(this, "Không tìm thấy người dùng!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        loadLatest(currentUser);
 
         btnMucTieu.setOnClickListener(v -> startActivity(new Intent(this, muctieu_themmuctieu.class)));
-         btnDangXuat = findViewById(R.id.btnDangXuat);
 
         btnDangXuat.setOnClickListener(v -> {
-            // Xoá thông tin đăng nhập (nếu bạn có lưu bằng SharedPreferences)
-            getSharedPreferences("user_prefs", MODE_PRIVATE)
-                    .edit()
-                    .clear()
-                    .apply();
-
-            // Quay lại màn hình đăng nhập
+            prefs.edit().remove("currentUser").apply();
             Intent intent = new Intent(MucTieuActivity.this, dangnhap_activity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         });
 
-        txtMucTieu.setOnClickListener(v -> {
-            Intent i = new Intent(this, muctieu_muctieu.class);
-            startActivity(i);
-        });
+        txtMucTieu.setOnClickListener(v -> startActivity(new Intent(this, muctieu_muctieu.class)));
 
         BottomNavigationView nav = findViewById(R.id.bottomNavigationView2);
         nav.setSelectedItemId(R.id.menu_muctieu);
@@ -66,8 +65,8 @@ public class MucTieuActivity extends AppCompatActivity {
         });
     }
 
-    private void loadLatest() {
-        muctieu m = dao.getCurrent(currentUserId);
+    private void loadLatest(String username) {
+        muctieu m = dao.getCurrent(username);
         if (m != null) {
             txtMucTieu.setText("Mục tiêu: " + m.getTenMucTieu());
             txtBmi.setText(String.format(Locale.getDefault(), "%.1f", m.getBmi()));

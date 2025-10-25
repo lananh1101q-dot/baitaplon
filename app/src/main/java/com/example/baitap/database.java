@@ -16,7 +16,7 @@ import java.util.Random;
 public class database extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "suckhoe.db";
-    private static final int DATABASE_VERSION = 6; // tăng version nếu thay đổi schema
+    private static final int DATABASE_VERSION = 7; // tăng version nếu thay đổi schema
     public static final String TBL_LOAI = "loai";
     public static final String TBL_MONAN = "monan";
     public static final String TBL_FOODLOG = "food_log";

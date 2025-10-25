@@ -1,17 +1,17 @@
 package com.example.baitap;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 public class muctieu_muctieu extends AppCompatActivity {
     Button btnGiam, btnGiu, btnTang;
-    int currentUserId = 1; // user hiện tại
     MucTieuDAO dao;
-    muctieu mucTieuHienTai; // mục tiêu đang có trong DB
+    muctieu mucTieuHienTai;
+    int currentUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,31 +23,43 @@ public class muctieu_muctieu extends AppCompatActivity {
         btnTang = findViewById(R.id.tangcan);
 
         dao = new MucTieuDAO(this);
-        // ✅ Lấy mục tiêu hiện tại của user
-        mucTieuHienTai = dao.getCurrent(1);  // nếu app nhiều user thì dùng dao.getCurrent(currentUserId)
 
+        // ✅ Lấy username từ SharedPreferences
+        SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        String currentUsername = prefs.getString("currentUser", null);
+        if (currentUsername == null) {
+            Toast.makeText(this, "Không tìm thấy người dùng!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        // ✅ Lấy userId từ username
+        currentUserId = dao.getUserIdByUsername(currentUsername);
+        if (currentUserId == -1) {
+            Toast.makeText(this, "Không tìm thấy ID người dùng!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        // ✅ Lấy mục tiêu hiện tại
+        mucTieuHienTai = dao.getCurrent(currentUserId);
         if (mucTieuHienTai == null) {
             Toast.makeText(this, "Chưa có dữ liệu mục tiêu trước đó!", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
-        // 👉 Giảm cân
         btnGiam.setOnClickListener(v -> {
             mucTieuHienTai.setTenMucTieu("Giảm cân");
             mucTieuHienTai.setNangLuong(mucTieuHienTai.getNangLuong() - 300);
-            mucTieuHienTai.setLuongNuoc(mucTieuHienTai.getLuongNuoc());
             capNhatVaChuyenManHinh();
         });
 
-        // 👉 Giữ cân
         btnGiu.setOnClickListener(v -> {
             mucTieuHienTai.setTenMucTieu("Giữ cân");
-            // Giữ nguyên năng lượng và nước
             capNhatVaChuyenManHinh();
         });
 
-        // 👉 Tăng cân
         btnTang.setOnClickListener(v -> {
             mucTieuHienTai.setTenMucTieu("Tăng cân");
             mucTieuHienTai.setNangLuong(mucTieuHienTai.getNangLuong() + 300);
@@ -57,12 +69,10 @@ public class muctieu_muctieu extends AppCompatActivity {
     }
 
     private void capNhatVaChuyenManHinh() {
-        // ✅ Cập nhật mục tiêu hiện tại (dựa theo id)
         boolean ok = dao.updatee(mucTieuHienTai);
         if (ok) {
             Toast.makeText(this, "Đã cập nhật mục tiêu: " + mucTieuHienTai.getTenMucTieu(), Toast.LENGTH_SHORT).show();
-            Intent i = new Intent(this, MucTieuActivity.class);
-            startActivity(i);
+            startActivity(new Intent(this, MucTieuActivity.class));
             finish();
         } else {
             Toast.makeText(this, "Cập nhật thất bại!", Toast.LENGTH_SHORT).show();

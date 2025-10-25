@@ -1,6 +1,7 @@
 package com.example.baitap;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,13 +15,12 @@ public class muctieu_themmuctieu extends AppCompatActivity {
     Button btnTiep, btnVe;
     MucTieuDAO dao;
     muctieu mucTieuHienTai;
-    int currentUserId = 1; // giả định user hiện tại
+    int currentUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_muctieu_thaydoi);
-
         edtChieuCao = findViewById(R.id.chieucao);
         edtCanNang = findViewById(R.id.cannang);
         edtTuoi = findViewById(R.id.tuoi);
@@ -30,13 +30,29 @@ public class muctieu_themmuctieu extends AppCompatActivity {
         btnVe = findViewById(R.id.ve);
 
         dao = new MucTieuDAO(this);
+
+        SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        String currentUsername = prefs.getString("currentUser", null);
+        if (currentUsername == null) {
+            Toast.makeText(this, "Không tìm thấy người dùng!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        currentUserId = dao.getUserIdByUsername(currentUsername);
+        if (currentUserId == -1) {
+            Toast.makeText(this, "Không tìm thấy ID người dùng!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
         mucTieuHienTai = dao.getCurrent(currentUserId);
 
         if (mucTieuHienTai != null) {
             edtChieuCao.setText(String.valueOf(mucTieuHienTai.getChieuCao()));
             edtCanNang.setText(String.valueOf(mucTieuHienTai.getCanNang()));
             edtTuoi.setText(String.valueOf(mucTieuHienTai.getTuoi()));
-            if (mucTieuHienTai.isGioiTinhNam()) radNam.setChecked(true);
+            if ("Nam".equalsIgnoreCase(mucTieuHienTai.getGioiTinh())) radNam.setChecked(true);
             else radNu.setChecked(true);
         }
 
@@ -55,6 +71,7 @@ public class muctieu_themmuctieu extends AppCompatActivity {
             double nang = Double.parseDouble(sNang);
             int tuoi = Integer.parseInt(sTuoi);
             boolean isNam = radNam.isChecked();
+            String gioiTinh = isNam ? "Nam" : "Nữ";
 
             double bmr = isNam
                     ? 88.362 + (13.397 * nang) + (4.799 * cao) - (5.677 * tuoi)
@@ -64,24 +81,24 @@ public class muctieu_themmuctieu extends AppCompatActivity {
             int luongNuoc = (int) Math.round(nang * 35);
             String ngay = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
-            // Nếu chưa có mục tiêu -> tạo mới và sang chọn chế độ
             if (mucTieuHienTai == null) {
-                muctieu m = new muctieu(currentUserId, cao, nang, tuoi, isNam, bmi, nangLuong, luongNuoc, ngay);
+                muctieu m = new muctieu(currentUserId, cao, nang, tuoi, gioiTinh,bmi, nangLuong, luongNuoc, ngay);
                 dao.insert(m);
-                Intent i = new Intent(this, muctieu_muctieu.class);
-                i.putExtra("chieu", cao);
-                i.putExtra("can", nang);
-                i.putExtra("bmi", bmi);
-                i.putExtra("nangluong", nangLuong);
-                i.putExtra("luongnuoc", luongNuoc);
-                i.putExtra("ngayDb", ngay);
-                startActivity(i);
+                Toast.makeText(this, "Đã lưu mục tiêu mới!", Toast.LENGTH_SHORT).show();
             } else {
-                // Nếu đã có mục tiêu -> cập nhật và quay lại xem
-                mucTieuHienTai.update(cao, nang, tuoi, isNam, bmi, nangLuong, luongNuoc, ngay);
+                mucTieuHienTai.setChieuCao(cao);
+                mucTieuHienTai.setCanNang(nang);
+                mucTieuHienTai.setTuoi(tuoi);
+                mucTieuHienTai.setGioiTinh(gioiTinh);
+                mucTieuHienTai.setBmi(bmi);
+                mucTieuHienTai.setNangLuong(nangLuong);
+                mucTieuHienTai.setLuongNuoc(luongNuoc);
+                mucTieuHienTai.setNgay(ngay);
                 dao.update(mucTieuHienTai);
-                startActivity(new Intent(this, MucTieuActivity.class));
+                Toast.makeText(this, "Đã cập nhật mục tiêu!", Toast.LENGTH_SHORT).show();
             }
+
+            startActivity(new Intent(this, MucTieuActivity.class));
             finish();
         });
     }

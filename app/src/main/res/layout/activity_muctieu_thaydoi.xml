@@ -70,7 +70,8 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Giới tính: " />
+                android:text="Giới tính: "
+                android:id="@+id/gioiTinh"/>
 
             <RadioButton
 
