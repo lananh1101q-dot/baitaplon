@@ -80,7 +80,7 @@
     <!-- Biểu đồ -->
     <!-- Biểu đồ -->
     <TextView
-        android:text="Biểu đồ uống nước (7 ngày gần nhất)"
+        android:text="Biểu đồ uống nước hôm nay"
         android:textStyle="bold"
         android:textSize="16sp"
         android:layout_width="match_parent"
@@ -91,6 +91,7 @@
         android:id="@+id/barChart"
         android:layout_width="match_parent"
         android:layout_height="200dp"
+        android:layout_marginBottom="16dp"
         android:background="#F0F0F0" />
 
 
