@@ -27,6 +27,11 @@ public class database extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        // Bảng tài khoản người dùng
+        db.execSQL("CREATE TABLE IF NOT EXISTS taikhoan (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "tendangnhap TEXT UNIQUE, " +
+                "matkhau TEXT)");
         // Bảng mục tiêu
         db.execSQL("CREATE TABLE IF NOT EXISTS muctieu (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -552,4 +557,34 @@ public int getTongCaloNgay(String ngay) {
             seedData();
         }
     }
+    // =============== ĐĂNG KÝ - ĐĂNG NHẬP ===============
+
+    // Thêm tài khoản mới
+    public boolean dangKy(String ten, String matkhau) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Kiểm tra trùng tên đăng nhập
+        Cursor c = db.rawQuery("SELECT * FROM taikhoan WHERE tendangnhap = ?", new String[]{ten});
+        boolean exists = c.moveToFirst();
+        c.close();
+
+        if (exists) return false; // đã tồn tại
+
+        ContentValues values = new ContentValues();
+        values.put("tendangnhap", ten);
+        values.put("matkhau", matkhau);
+        long result = db.insert("taikhoan", null, values);
+        return result != -1;
+    }
+
+    // Kiểm tra đăng nhập
+    public boolean dangNhap(String ten, String matkhau) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM taikhoan WHERE tendangnhap = ? AND matkhau = ?",
+                new String[]{ten, matkhau});
+        boolean success = c.moveToFirst();
+        c.close();
+        return success;
+    }
+
 }
