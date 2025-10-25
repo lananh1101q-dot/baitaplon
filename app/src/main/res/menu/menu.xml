@@ -11,7 +11,7 @@
 
         android:id="@+id/menu_thucan"
         android:title="Thức Ăn"
-        android:icon="@drawable/thuca"/>
+        android:icon="@drawable/thuan"/>
     <item
 
         android:id="@+id/menu_tapluyen"
