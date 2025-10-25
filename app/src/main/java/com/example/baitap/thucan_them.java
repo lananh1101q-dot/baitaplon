@@ -1,16 +1,9 @@
 package com.example.baitap;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.example.baitap.database;
-import com.example.baitap.model_Loai;
-import com.example.baitap.model_Monan;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -30,7 +23,7 @@ public class thucan_them extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.thucan_them); // your XML file name
+        setContentView(R.layout.thucan_them);
 
         spinnerLoai = findViewById(R.id.spinnerLoai);
         spinnerMon = findViewById(R.id.spinnerMon);
@@ -43,19 +36,18 @@ public class thucan_them extends AppCompatActivity {
 
         spinnerLoai.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, android.view.View view, int position, long id) {
                 model_Loai l = loaiList.get(position);
                 loadMonByLoai(l.getId());
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
+            public void onNothingSelected(AdapterView<?> parent) { }
         });
 
         spinnerMon.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, android.view.View view, int position, long id) {
                 selectedMon = monanList.get(position);
                 tvCalo.setText(selectedMon.getCalo() + " kcal");
             }
@@ -72,15 +64,18 @@ public class thucan_them extends AppCompatActivity {
                 Toast.makeText(thucan_them.this, "Vui lòng chọn món", Toast.LENGTH_SHORT).show();
                 return;
             }
-            String today = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date());
+            // Ghi ngày theo định dạng database
+            String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
             db.insertFoodLog(selectedMon.getId(), today, null);
+
+            Toast.makeText(this, "Đã lưu món ăn!", Toast.LENGTH_SHORT).show();
             setResult(RESULT_OK);
             finish();
         });
 
         btHuy.setOnClickListener(v -> {
             new AlertDialog.Builder(thucan_them.this)
-                    .setTitle("Huỷ")
+                    .setTitle("Huỷ thêm món")
                     .setMessage("Bạn có muốn huỷ thêm món không?")
                     .setPositiveButton("Có", (dialog, which) -> {
                         setResult(RESULT_CANCELED);

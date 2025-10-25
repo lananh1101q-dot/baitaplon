@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:padding="16dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FAFAFA">
+    android:background="#FAFAFA"
+    android:padding="16dp">
 
     <!-- Tiêu đề ngày hiện tại -->
     <TextView
@@ -16,7 +15,7 @@
         android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="#212121"
-        android:layout_gravity="center_horizontal"
+        android:layout_centerHorizontal="true"
         android:paddingBottom="8dp" />
 
     <!-- Tổng lượng calo -->
@@ -24,18 +23,20 @@
         android:id="@+id/tvTongCalo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/tvNgay"
         android:text="Tổng: 0 kcal"
         android:textSize="18sp"
         android:textColor="#FF5722"
         android:textStyle="bold"
         android:gravity="center"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="8dp" />
 
-    <!-- Nút chọn món ăn -->
+    <!-- Nút thêm món ăn -->
     <Button
         android:id="@+id/btnThemMon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/tvTongCalo"
         android:text="Thêm món ăn"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -45,23 +46,28 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp" />
 
+    <!-- Danh sách món ăn -->
     <ListView
         android:id="@+id/lv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"></ListView>
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_below="@id/btnThemMon"
+        android:layout_above="@id/bottomNavigationView2"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="1dp" />
+
+    <!-- Thanh điều hướng dưới -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView2"
-
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        app:menu="@menu/menu"
         app:itemIconSize="40dp"
         app:labelVisibilityMode="labeled"
-        app:menu="@menu/menu"
         app:itemIconTint="@null"
         app:itemTextColor="@color/black"
+        android:background="#FFFFFF"
+        android:elevation="8dp" />
 
-        />
-</LinearLayout>
-
-
+</RelativeLayout>
