@@ -5,7 +5,8 @@
 
         android:id="@+id/menu_uongnuoc"
         android:title="Uống nước "
-        android:icon="@drawable/uongnuoc"
+        android:icon="@android:drawable/ic_menu_camera"
+
         />
     <item
 
