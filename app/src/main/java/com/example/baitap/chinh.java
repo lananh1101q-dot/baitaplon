@@ -33,7 +33,12 @@ public class chinh extends AppCompatActivity {
                 startActivity(new Intent(this, UongNuocActivity.class));
                 overridePendingTransition(0, 0);
                 return true;
-            }
+
+        } else if (id == R.id.menu_thucan) {
+            startActivity(new Intent(this, UongNuocActivity.class));
+            overridePendingTransition(0, 0);
+            return true;
+        }
             return false;
         });
     }
