@@ -36,5 +36,10 @@ public class chinh extends AppCompatActivity {
             }
             return false;
         });
+        // Tạo instance của database
+        database dbHelper = new database(this);
+
+        // Tự động tạo dữ liệu mẫu nếu database trống
+
     }
 }

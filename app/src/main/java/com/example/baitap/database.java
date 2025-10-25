@@ -21,6 +21,7 @@ public class database extends SQLiteOpenHelper {
     }
 
     @Override
+
     public void onCreate(SQLiteDatabase db) {
         // Bảng mục tiêu
         db.execSQL("CREATE TABLE IF NOT EXISTS muctieu (" +
@@ -83,6 +84,18 @@ public class database extends SQLiteOpenHelper {
                 "luong INTEGER, " +
                 "ghichu TEXT" +
                 ")");
+        db.execSQL("CREATE TABLE IF NOT EXISTS bieudo_uongnuoc (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "ngay TEXT, " +
+                "tongml INTEGER)");
+        // Bảng người dùng
+        db.execSQL("CREATE TABLE IF NOT EXISTS users (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "username TEXT UNIQUE, " +
+                "password TEXT, " +
+                "email TEXT UNIQUE)");
+
+
     }
 
     @Override
@@ -101,6 +114,11 @@ public class database extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS lichnhacnuoc");
         db.execSQL("DROP TABLE IF EXISTS lichsu_uongnuoc");
         onCreate(db);
+        db.execSQL("CREATE TABLE IF NOT EXISTS bieudo_uongnuoc (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "ngay TEXT, " +
+                "tongml INTEGER)");
+
     }
 
     public boolean isDatabaseEmpty() {
