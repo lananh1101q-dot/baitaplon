@@ -7,39 +7,123 @@
     android:padding="24dp"
     android:gravity="center_horizontal">
 
+    <!-- Mục tiêu hôm nay -->
     <TextView
         android:id="@+id/tvMucTieu"
         android:text="Mục tiêu hôm nay: ..."
         android:textSize="18sp"
         android:layout_marginBottom="10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
+    <!-- Tổng đã uống -->
     <TextView
         android:id="@+id/tvTongUong"
         android:text="Đã uống: ..."
         android:textSize="18sp"
-        android:layout_marginBottom="20dp"    android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <!-- Tiến độ -->
+    <TextView
+        android:id="@+id/tvTienDo"
+        android:text="Tiến độ: 0%"
+        android:textSize="18sp"
+        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <!-- Thanh tiến độ -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progress="0"
+        android:layout_marginBottom="16dp"
+        android:progressTint="@android:color/holo_blue_light" />
+
+    <!-- Nhập số ml -->
     <EditText
         android:id="@+id/edtNhapNuoc"
         android:hint="Nhập số ml vừa uống"
         android:inputType="number"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
+    <!-- Nút lưu -->
     <Button
         android:id="@+id/btnLuu"
         android:text="Lưu lượng nước"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="16dp" />
+
+    <!-- Nút bật/tắt nhắc nhở -->
+    <Button
+        android:id="@+id/btnNhacNho"
+        android:text="Bật nhắc nhở uống nước"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="@android:color/holo_green_light" />
+
+    <!-- Đường kẻ chia -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#CCCCCC"
+        android:layout_marginVertical="12dp" />
+
+    <!-- Biểu đồ -->
+    <TextView
+        android:text="Biểu đồ uống nước (đang phát triển)"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp" />
+
+    <FrameLayout
+        android:id="@+id/layoutBieuDo"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:background="#F0F0F0"
+        android:gravity="center">
+        <TextView
+            android:text="Biểu đồ đang cập nhật..."
+            android:textColor="#888888"
+            android:textSize="14sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </FrameLayout>
+
+    <!-- Lịch sử -->
+    <TextView
+        android:text="Lịch sử uống nước hôm nay"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_marginTop="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <ListView
+        android:id="@+id/listLichSu"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#FAFAFA" />
+
+    <!-- Thanh điều hướng dưới -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
         app:itemIconSize="40dp"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/menu" />
+
 </LinearLayout>
