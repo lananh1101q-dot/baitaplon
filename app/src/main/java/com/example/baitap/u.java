@@ -1,4 +1,4 @@
 package com.example.baitap;
 
-public class uuu {
+public class u {
 }
