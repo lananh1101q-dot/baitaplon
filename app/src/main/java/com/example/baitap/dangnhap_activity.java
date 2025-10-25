@@ -7,11 +7,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import org.json.JSONObject;
 
 public class dangnhap_activity extends AppCompatActivity {
 
-    EditText edtUser, edtPass;
-    Button btnDangNhap, btnDangKy;
+    private EditText edtUser, edtPass;
+    private Button btnDangNhap, btnDangKy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,40 +25,44 @@ public class dangnhap_activity extends AppCompatActivity {
         btnDangKy = findViewById(R.id.btnDangKy);
 
         SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-        String savedUser = prefs.getString("username", null);
-        String savedPass = prefs.getString("password", null);
 
-        // 🟢 Nút Đăng nhập
         btnDangNhap.setOnClickListener(v -> {
-            String user = edtUser.getText().toString().trim();
-            String pass = edtPass.getText().toString().trim();
+            String username = edtUser.getText().toString().trim();
+            String password = edtPass.getText().toString().trim();
 
-            if (user.isEmpty() || pass.isEmpty()) {
+            if (username.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            if (savedUser == null || savedPass == null) {
-                Toast.makeText(this, "Chưa có tài khoản, vui lòng đăng ký!", Toast.LENGTH_SHORT).show();
-                return;
-            }
+            try {
+                String usersJson = prefs.getString("users", "{}");
+                JSONObject users = new JSONObject(usersJson);
 
-            if (user.equals(savedUser) && pass.equals(savedPass)) {
-                Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+                if (!users.has(username)) {
+                    Toast.makeText(this, "Tài khoản không tồn tại!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-                // ✅ Chuyển sang màn hình chính (ví dụ tapluyen)
-                Intent intent = new Intent(this, MucTieuActivity.class);
-                startActivity(intent);
-                finish();
-            } else {
-                Toast.makeText(this, "Sai tên đăng nhập hoặc mật khẩu!", Toast.LENGTH_SHORT).show();
+                String savedPassword = users.getString(username);
+                if (savedPassword.equals(password)) {
+                    prefs.edit().putString("currentUser", username).apply();
+                    Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+
+                    startActivity(new Intent(this, MucTieuActivity.class));
+                    finish();
+                } else {
+                    Toast.makeText(this, "Sai mật khẩu!", Toast.LENGTH_SHORT).show();
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Lỗi khi đăng nhập!", Toast.LENGTH_SHORT).show();
             }
         });
 
-        // 🟢 Nút Đăng ký
         btnDangKy.setOnClickListener(v -> {
-            Intent intent = new Intent(this, dangki_activity.class);
-            startActivity(intent);
+            startActivity(new Intent(this, dangki_activity.class));
         });
     }
 }

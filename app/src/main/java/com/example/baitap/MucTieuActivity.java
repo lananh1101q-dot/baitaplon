@@ -11,7 +11,8 @@ import java.util.Locale;
 
 public class MucTieuActivity extends AppCompatActivity {
     TextView txtMucTieu, txtBmi, txtChieuCao, txtCanNang, txtNl, txtLuongNuoc, txtNgay;
-    Button btnMucTieu;
+    Button btnMucTieu,btnDangXuat;
+
     MucTieuDAO dao;
     int currentUserId = 1;
 
@@ -33,6 +34,20 @@ public class MucTieuActivity extends AppCompatActivity {
         loadLatest();
 
         btnMucTieu.setOnClickListener(v -> startActivity(new Intent(this, muctieu_themmuctieu.class)));
+         btnDangXuat = findViewById(R.id.btnDangXuat);
+
+        btnDangXuat.setOnClickListener(v -> {
+            // Xoá thông tin đăng nhập (nếu bạn có lưu bằng SharedPreferences)
+            getSharedPreferences("user_prefs", MODE_PRIVATE)
+                    .edit()
+                    .clear()
+                    .apply();
+
+            // Quay lại màn hình đăng nhập
+            Intent intent = new Intent(MucTieuActivity.this, dangnhap_activity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        });
 
         txtMucTieu.setOnClickListener(v -> {
             Intent i = new Intent(this, muctieu_muctieu.class);

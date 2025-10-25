@@ -7,52 +7,54 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import org.json.JSONObject;
 
 public class dangki_activity extends AppCompatActivity {
 
-    EditText edtNewUser, edtNewPass, edtNewPass2;
-    Button btnCreate;
+    private EditText edtUser, edtPass;
+    private Button btnDangKy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dangki); // Giao diện bạn đã tạo ở trên
+        setContentView(R.layout.activity_dangki);
 
-        edtNewUser = findViewById(R.id.edtNewUser);
-        edtNewPass = findViewById(R.id.edtNewPass);
-        edtNewPass2 = findViewById(R.id.edtNewPass2);
-        btnCreate = findViewById(R.id.btnCreate);
+        edtUser = findViewById(R.id.edtUser);
+        edtPass = findViewById(R.id.edtPass);
+        btnDangKy = findViewById(R.id.btnDangKy);
 
         SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
 
-        btnCreate.setOnClickListener(v -> {
-            String user = edtNewUser.getText().toString().trim();
-            String pass = edtNewPass.getText().toString().trim();
-            String pass2 = edtNewPass2.getText().toString().trim();
+        btnDangKy.setOnClickListener(v -> {
+            String username = edtUser.getText().toString().trim();
+            String password = edtPass.getText().toString().trim();
 
-            // Kiểm tra nhập trống
-            if (user.isEmpty() || pass.isEmpty() || pass2.isEmpty()) {
-                Toast.makeText(this, "Vui lòng nhập đủ thông tin!", Toast.LENGTH_SHORT).show();
+            if (username.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Kiểm tra xác minh mật khẩu
-            if (!pass.equals(pass2)) {
-                Toast.makeText(this, "Mật khẩu xác nhận không khớp!", Toast.LENGTH_SHORT).show();
-                return;
+            try {
+                String usersJson = prefs.getString("users", "{}");
+                JSONObject users = new JSONObject(usersJson);
+
+                if (users.has(username)) {
+                    Toast.makeText(this, "Tài khoản đã tồn tại!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                users.put(username, password);
+                prefs.edit().putString("users", users.toString()).apply();
+
+                Toast.makeText(this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
+
+                startActivity(new Intent(this, dangnhap_activity.class));
+                finish();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Lỗi khi đăng ký!", Toast.LENGTH_SHORT).show();
             }
-
-            // Lưu thông tin tài khoản
-            editor.putString("username", user);
-            editor.putString("password", pass);
-            editor.apply();
-
-            Toast.makeText(this, "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
-
-            // Quay về màn hình đăng nhập
-            startActivity(new Intent(this, dangnhap_activity.class));
-            finish();
         });
     }
 }

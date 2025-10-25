@@ -1,45 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="24dp"
     android:gravity="center"
-    android:background="#FAFAFA">
-
-    <TextView
-        android:text="ĐĂNG KÝ"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="24dp"
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <EditText
-        android:id="@+id/edtNewUser"
+        android:id="@+id/edtUser"
         android:hint="Tên đăng nhập"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <EditText
-        android:id="@+id/edtNewPass"
+        android:id="@+id/edtPass"
         android:hint="Mật khẩu"
         android:inputType="textPassword"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-    <EditText
-        android:id="@+id/edtNewPass2"
-        android:hint="Xác minh lại mật khẩu"
-        android:inputType="textPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <Button
-        android:id="@+id/btnCreate"
-        android:text="Tạo tài khoản"
+        android:id="@+id/btnDangKy"
+        android:text="Đăng ký"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="16dp" />
 
 </LinearLayout>
