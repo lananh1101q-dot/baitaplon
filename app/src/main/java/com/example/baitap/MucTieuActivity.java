@@ -12,6 +12,7 @@ import java.util.Locale;
 public class MucTieuActivity extends AppCompatActivity {
     TextView txtMucTieu, txtBmi, txtChieuCao, txtCanNang, txtNl, txtLuongNuoc, txtNgay;
     Button btnMucTieu;
+    Button btnDangXuat;
     MucTieuDAO dao;
     int currentUserId = 1;
 
@@ -28,11 +29,27 @@ public class MucTieuActivity extends AppCompatActivity {
         txtLuongNuoc = findViewById(R.id.luongnuoc);
         txtNgay = findViewById(R.id.ngay);
         btnMucTieu = findViewById(R.id.btmuctieu);
+        btnDangXuat = findViewById(R.id.btnDangXuat);
 
         dao = new MucTieuDAO(this);
         loadLatest();
 
         btnMucTieu.setOnClickListener(v -> startActivity(new Intent(this, muctieu_themmuctieu.class)));
+        btnDangXuat.setOnClickListener(v -> {
+            // Xoá thông tin đăng nhập (nếu bạn có dùng SharedPreferences để lưu user)
+            getSharedPreferences("UserPrefs", MODE_PRIVATE)
+                    .edit()
+                    .clear()
+                    .apply();
+
+            Toast.makeText(this, "Đăng xuất thành công!", Toast.LENGTH_SHORT).show();
+
+            // Chuyển về màn hình đăng nhập
+            Intent intent = new Intent(this, dangnhap_activity.class); // hoặc LoginActivity nếu có
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish(); // đóng Activity hiện tại
+        });
 
         txtMucTieu.setOnClickListener(v -> {
             Intent i = new Intent(this, muctieu_muctieu.class);
