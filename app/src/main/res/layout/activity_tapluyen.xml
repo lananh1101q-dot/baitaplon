@@ -19,9 +19,14 @@
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
+            android:text="Tập Luyện"
+            android:textSize="60sp"
+
+            android:textStyle="bold"
+            android:textColor="#2196F3"
             android:gravity="center"
-            android:text="Tap luyen"
-            android:textSize="60sp" />
+            android:paddingBottom="16dp"/>
         <SearchView
             android:id="@+id/timkiem"
             android:layout_width="match_parent"
@@ -32,11 +37,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Bài tập mới " />
-        <Button
-            android:id="@+id/chon"
+        <TextView
+            android:id="@+id/txtTongCalo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Chọn" />
+            android:text="Năng lượng tiêu thụ hôm nay"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#F44336"
+            android:gravity="center"
+            android:paddingBottom="16dp"/>
 
         <ListView
             android:id="@+id/dstapluyen"

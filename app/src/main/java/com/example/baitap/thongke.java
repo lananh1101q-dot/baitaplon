@@ -2,6 +2,7 @@ package com.example.baitap;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
@@ -32,7 +33,7 @@ public class thongke extends AppCompatActivity {
         tvHapThu = findViewById(R.id.hapthu);
         tvNuocUong = findViewById(R.id.nccannap);
         tvChenhLech = findViewById(R.id.nlcannap);
-        
+
         btnNgay = findViewById(R.id.btnNgay);
         btnTuan = findViewById(R.id.btnTuan);
         btnThang = findViewById(R.id.btnThang);
@@ -40,7 +41,7 @@ public class thongke extends AppCompatActivity {
         db = new database(this);
         // Tự động tạo dữ liệu mẫu nếu database trống
         db.autoSeedIfEmpty();
-        
+
         mucTieuDAO = new MucTieuDAO(this);
 
         // Lấy ngày hôm nay
@@ -93,6 +94,14 @@ public class thongke extends AppCompatActivity {
             } else if (id == R.id.menu_thongke) {
                 return true;
             }
+        else if (id == R.id.menu_thucan) {
+            startActivity(new Intent(this, thucan_activity.class));
+            return true;
+        }
+            else if (id == R.id.menu_uongnuoc) {
+                startActivity(new Intent(this, UongNuocActivity.class));
+                return true;
+            }
             return false;
         });
     }
@@ -136,12 +145,14 @@ public class thongke extends AppCompatActivity {
         int nuocUong = db.getTongNuocUongTheoNgay(ngay);
 
         // Lấy mục tiêu
+
         muctieu mt = mucTieuDAO.getLatest();
+
         int mucTieuCalo = (mt != null) ? mt.getNangLuong() : 2000;
         int mucTieuNuoc = (mt != null) ? mt.getLuongNuoc() : 2000;
 
         // Tính chênh lệch (calo hấp thụ - calo tiêu thụ)
-        int chenhLechCalo = caloHapThu - caloTieuThu;
+        int chenhLechCalo = mucTieuCalo-caloHapThu + caloTieuThu;
         int chenhLechNuoc = mucTieuNuoc - nuocUong;
 
         // Hiển thị
@@ -149,10 +160,10 @@ public class thongke extends AppCompatActivity {
         tvTieuThu.setText(caloTieuThu + " kcal");
         tvHapThu.setText(caloHapThu + " kcal");
         tvNuocUong.setText(nuocUong + " ml (Cần thêm: " + (chenhLechNuoc > 0 ? chenhLechNuoc : 0) + " ml)");
-        
-        String ketQua = chenhLechCalo > 0 
-            ? "Dư " + chenhLechCalo + " kcal" 
-            : (chenhLechCalo < 0 ? "Thiếu " + Math.abs(chenhLechCalo) + " kcal" : "Đủ");
+
+        String ketQua = chenhLechCalo > 0
+                ? "Thiếu " + chenhLechCalo + " kcal"
+                : (chenhLechCalo < 0 ? "Dư " + Math.abs(chenhLechCalo) + " kcal" : "Đủ");
         tvChenhLech.setText(ketQua);
     }
 
@@ -170,21 +181,23 @@ public class thongke extends AppCompatActivity {
         int nuocUong = db.getTongNuocUongTheoTuan(ngayBatDau, ngayKetThuc);
 
         // Mục tiêu tuần = mục tiêu ngày * 7
+
         muctieu mt = mucTieuDAO.getLatest();
+
         int mucTieuCalo = (mt != null) ? mt.getNangLuong() * 7 : 14000;
         int mucTieuNuoc = (mt != null) ? mt.getLuongNuoc() * 7 : 14000;
 
-        int chenhLechCalo = caloHapThu - caloTieuThu;
+        int chenhLechCalo = mucTieuCalo-caloHapThu + caloTieuThu;
         int chenhLechNuoc = mucTieuNuoc - nuocUong;
 
         tvNgay.setText("Tuần: " + formatNgay(ngayBatDau) + " - " + formatNgay(ngayKetThuc));
         tvTieuThu.setText(caloTieuThu + " kcal");
         tvHapThu.setText(caloHapThu + " kcal");
         tvNuocUong.setText(nuocUong + " ml (Cần thêm: " + (chenhLechNuoc > 0 ? chenhLechNuoc : 0) + " ml)");
-        
-        String ketQua = chenhLechCalo > 0 
-            ? "Dư " + chenhLechCalo + " kcal" 
-            : (chenhLechCalo < 0 ? "Thiếu " + Math.abs(chenhLechCalo) + " kcal" : "Đủ");
+
+        String ketQua = chenhLechCalo > 0
+                ? "Thiếu " + chenhLechCalo + " kcal"
+                : (chenhLechCalo < 0 ? "Dư " + Math.abs(chenhLechCalo) + " kcal" : "Đủ");
         tvChenhLech.setText(ketQua);
     }
 
@@ -194,21 +207,23 @@ public class thongke extends AppCompatActivity {
         int nuocUong = db.getTongNuocUongTheoThang(thang);
 
         // Mục tiêu tháng = mục tiêu ngày * 30
+
         muctieu mt = mucTieuDAO.getLatest();
+
         int mucTieuCalo = (mt != null) ? mt.getNangLuong() * 30 : 60000;
         int mucTieuNuoc = (mt != null) ? mt.getLuongNuoc() * 30 : 60000;
 
-        int chenhLechCalo = caloHapThu - caloTieuThu;
+        int chenhLechCalo = mucTieuCalo-caloHapThu + caloTieuThu;
         int chenhLechNuoc = mucTieuNuoc - nuocUong;
 
         tvNgay.setText("Tháng: " + thang);
         tvTieuThu.setText(caloTieuThu + " kcal");
         tvHapThu.setText(caloHapThu + " kcal");
         tvNuocUong.setText(nuocUong + " ml (Cần thêm: " + (chenhLechNuoc > 0 ? chenhLechNuoc : 0) + " ml)");
-        
-        String ketQua = chenhLechCalo > 0 
-            ? "Dư " + chenhLechCalo + " kcal" 
-            : (chenhLechCalo < 0 ? "Thiếu " + Math.abs(chenhLechCalo) + " kcal" : "Đủ");
+
+        String ketQua = chenhLechCalo > 0
+                ? "Thiếu " + chenhLechCalo + " kcal"
+                : (chenhLechCalo < 0 ? "Dư " + Math.abs(chenhLechCalo) + " kcal" : "Đủ");
         tvChenhLech.setText(ketQua);
     }
 

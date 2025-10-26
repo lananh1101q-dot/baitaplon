@@ -7,33 +7,45 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
 public class database extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "suckhoe.db";
-    private static final int DATABASE_VERSION = 3; // tăng version nếu thay đổi schema
+    private static final int DATABASE_VERSION = 8; // tăng version nếu thay đổi schema
+    public static final String TBL_LOAI = "loai";
+    public static final String TBL_MONAN = "monan";
+    public static final String TBL_FOODLOG = "food_log";
 
     public database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
-
     public void onCreate(SQLiteDatabase db) {
-        // Bảng mục tiêu
-        db.execSQL("CREATE TABLE IF NOT EXISTS muctieu (" +
+        // Bảng tài khoản người dùng
+        db.execSQL("CREATE TABLE IF NOT EXISTS taikhoan (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "tendangnhap TEXT UNIQUE, " +
+                "matkhau TEXT)");
+        // Bảng mục tiêu
+        db.execSQL("CREATE TABLE muctieu (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "user_id INTEGER, " +
                 "tenmuctieu TEXT, " +
+                "gioitinh TEXT, " +
+                "tuoi INTEGER, " +
                 "chieucao REAL, " +
                 "cannang REAL, " +
                 "bmi REAL, " +
                 "nangluong INTEGER, " +
                 "luongnuoc INTEGER, " +
-                "ngay TEXT DEFAULT (date('now'))" +
-                ")");
+                "ngay TEXT, " +
+                "FOREIGN KEY(user_id) REFERENCES taikhoan(id) ON DELETE CASCADE)");
 
         // Bảng tập luyện
         db.execSQL("CREATE TABLE IF NOT EXISTS tapluyen (" +
@@ -45,13 +57,29 @@ public class database extends SQLiteOpenHelper {
                 ")");
 
         // Bảng thức ăn
-        db.execSQL("CREATE TABLE IF NOT EXISTS thucan (" +
+        // Loai
+        db.execSQL("CREATE TABLE " + TBL_LOAI + " (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "tenthucan TEXT, " +
-                "buaan TEXT, " +
-                "calohapthu INTEGER, " +
-                "ngay TEXT DEFAULT (date('now'))" +
-                ")");
+                "ten TEXT NOT NULL)");
+
+        // MonAn (each mon has a loai_id)
+        db.execSQL("CREATE TABLE " + TBL_MONAN + " (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "ten TEXT NOT NULL, " +
+                "calo INTEGER NOT NULL, " +
+                "loai_id INTEGER NOT NULL, " +
+                "FOREIGN KEY(loai_id) REFERENCES " + TBL_LOAI + "(id) ON DELETE CASCADE)");
+
+        // Food log (each saved entry references monan)
+        db.execSQL("CREATE TABLE " + TBL_FOODLOG + " (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "monan_id INTEGER NOT NULL, " +
+                "ngay TEXT NOT NULL, " + // format dd/MM/yyyy
+                "luot INTEGER DEFAULT 1, " + // optional count if you want multiples
+                "note TEXT, " +
+                "FOREIGN KEY(monan_id) REFERENCES " + TBL_MONAN + "(id) ON DELETE CASCADE)");
+
+        // Insert default categories and sample foods
 
         // Bảng uống nước
         db.execSQL("CREATE TABLE IF NOT EXISTS uongnuoc (" +
@@ -84,42 +112,201 @@ public class database extends SQLiteOpenHelper {
                 "luong INTEGER, " +
                 "ghichu TEXT" +
                 ")");
-        db.execSQL("CREATE TABLE IF NOT EXISTS bieudo_uongnuoc (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "ngay TEXT, " +
-                "tongml INTEGER)");
-        // Bảng người dùng
-        db.execSQL("CREATE TABLE IF NOT EXISTS users (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "username TEXT UNIQUE, " +
-                "password TEXT, " +
-                "email TEXT UNIQUE)");
 
 
+    // seed dữ liệu mặc định
+    seedInitialData(db);
+}
+
+@Override
+public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    db.execSQL("DROP TABLE IF EXISTS " + TBL_FOODLOG);
+    db.execSQL("DROP TABLE IF EXISTS " + TBL_MONAN);
+    db.execSQL("DROP TABLE IF EXISTS " + TBL_LOAI);
+    db.execSQL("DROP TABLE IF EXISTS muctieu");
+    db.execSQL("DROP TABLE IF EXISTS tapluyen");
+    db.execSQL("DROP TABLE IF EXISTS uongnuoc");
+    db.execSQL("DROP TABLE IF EXISTS thongke");
+    db.execSQL("DROP TABLE IF EXISTS lichnhacnuoc");
+    db.execSQL("DROP TABLE IF EXISTS lichsu_uongnuoc");
+    onCreate(db);
+}
+
+// ==========================================
+// ========== HÀM TẠO DỮ LIỆU MẪU ==========
+// ==========================================
+
+private void seedInitialData(SQLiteDatabase db) {
+    // Loại
+    long idChay = insertLoai(db, "Món ăn chay");
+    long idNhieu = insertLoai(db, "Món ăn nhiều calo");
+    long idIt = insertLoai(db, "Món ăn ít calo");
+    long idBinh = insertLoai(db, "Món ăn bình thường");
+
+    // Món ăn
+    insertMonAn(db, "Sườn chay", 150, (int) idChay);
+    insertMonAn(db, "Đậu hũ chiên", 180, (int) idChay);
+    insertMonAn(db, "Giò chay", 200, (int) idChay);
+    insertMonAn(db, "Rau xào thập cẩm ", 85, (int) idChay);
+    insertMonAn(db, "Cơm trắng", 130, (int) idChay);
+    insertMonAn(db, "Canh bí đỏ", 60, (int) idChay);
+    insertMonAn(db, "Bún chay", 120, (int) idChay);
+    insertMonAn(db, "Chả chay", 160, (int) idChay);
+    insertMonAn(db, "Nấm xào đậu hũ", 100, (int) idChay);
+    insertMonAn(db, "Miến xào chay", 140, (int) idChay);
+    insertMonAn(db, "Đậu que luộc", 35, (int) idChay);
+    insertMonAn(db, "Súp rau củ", 50, (int) idChay);
+    insertMonAn(db, "Cơm gà chiên", 600, (int) idNhieu);
+    insertMonAn(db, "Bánh mì bơ đường", 320, (int) idNhieu);
+    insertMonAn(db, "Thịt ba chỉ quay", 520, (int) idNhieu);
+    insertMonAn(db, "Gà rán", 480, (int) idNhieu);
+    insertMonAn(db, "Pizza phô mai", 270, (int) idNhieu);
+    insertMonAn(db, "Hamburger bò", 295, (int) idNhieu);
+    insertMonAn(db, "Khoai tây chiên", 312, (int) idNhieu);
+    insertMonAn(db, "Bánh mì kẹp trứng", 250, (int) idNhieu);
+    insertMonAn(db, "Cơm chiên trứng", 230, (int) idNhieu);
+    insertMonAn(db, "Sườn nướng mật ong", 360, (int) idNhieu);
+    insertMonAn(db, "Bánh ngọt kem bơ", 410, (int) idNhieu);
+    insertMonAn(db, "Xúc xích chiên", 300, (int) idNhieu);
+    insertMonAn(db, "Salad rau", 80, (int) idIt);
+    insertMonAn(db, "Sữa chua không đường", 90, (int) idIt);
+    insertMonAn(db, "Rau luộc", 30, (int) idIt);
+    insertMonAn(db, "Dưa leo", 16, (int) idIt);
+    insertMonAn(db, "Cà chua", 18, (int) idIt);
+    insertMonAn(db, "Canh rau ngót", 45, (int) idIt);
+    insertMonAn(db, "Trứng luộc", 155, (int) idIt);
+    insertMonAn(db, "Cá hấp", 120, (int) idIt);
+    insertMonAn(db, "Ức gà luộc", 165, (int) idIt);
+    insertMonAn(db, "Cháo trắng", 45, (int) idIt);
+    insertMonAn(db, "Nước ép cam", 50, (int) idIt);
+    insertMonAn(db, "Bánh mì", 200, (int) idBinh);
+    insertMonAn(db, "Phở bò", 350, (int) idBinh);
+    insertMonAn(db, "Cơm tấm", 200, (int) idBinh);
+    insertMonAn(db, "Trứng chiên", 210, (int) idBinh);
+    insertMonAn(db, "Thịt kho trứng", 250, (int) idBinh);
+    insertMonAn(db, "Canh chua cá", 120, (int) idBinh);
+    insertMonAn(db, "Bún bò Huế", 220, (int) idBinh);
+    insertMonAn(db, "Cơm gà xối mỡ", 240, (int) idBinh);
+    insertMonAn(db, "Cá kho tộ", 200, (int) idBinh);
+    insertMonAn(db, "Bánh mì thịt", 230, (int) idBinh);
+    insertMonAn(db, "Miến xào bò", 190, (int) idBinh);
+}
+
+private long insertLoai(SQLiteDatabase db, String ten) {
+    ContentValues v = new ContentValues();
+    v.put("ten", ten);
+    return db.insert(TBL_LOAI, null, v);
+}
+
+private long insertMonAn(SQLiteDatabase db, String ten, int calo, int loaiId) {
+    ContentValues v = new ContentValues();
+    v.put("ten", ten);
+    v.put("calo", calo);
+    v.put("loai_id", loaiId);
+    return db.insert(TBL_MONAN, null, v);
+}
+
+// ==========================================
+// =========== HÀM TRUY VẤN DỮ LIỆU =========
+// ==========================================
+
+public List<model_Loai> getAllLoai() {
+    List<model_Loai> list = new ArrayList<>();
+    SQLiteDatabase db = getReadableDatabase();
+    Cursor c = db.rawQuery("SELECT id, ten FROM " + TBL_LOAI, null);
+    while (c.moveToNext()) {
+        list.add(new model_Loai(c.getInt(0), c.getString(1)));
     }
+    c.close();
+    return list;
+}
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS muctieu");
-        db.execSQL("DROP TABLE IF EXISTS tapluyen");
-        db.execSQL("DROP TABLE IF EXISTS thucan");
-        db.execSQL("DROP TABLE IF EXISTS uongnuoc");
-        db.execSQL("DROP TABLE IF EXISTS thongke");
-        onCreate(db);
-        db.execSQL("DROP TABLE IF EXISTS muctieu");
-        db.execSQL("DROP TABLE IF EXISTS tapluyen");
-        db.execSQL("DROP TABLE IF EXISTS thucan");
-        db.execSQL("DROP TABLE IF EXISTS uongnuoc");
-        db.execSQL("DROP TABLE IF EXISTS thongke");
-        db.execSQL("DROP TABLE IF EXISTS lichnhacnuoc");
-        db.execSQL("DROP TABLE IF EXISTS lichsu_uongnuoc");
-        onCreate(db);
-        db.execSQL("CREATE TABLE IF NOT EXISTS bieudo_uongnuoc (" +
-                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                "ngay TEXT, " +
-                "tongml INTEGER)");
-
+public List<model_Monan> getMonAnByLoai(int loaiId) {
+    List<model_Monan> list = new ArrayList<>();
+    SQLiteDatabase db = getReadableDatabase();
+    Cursor c = db.rawQuery("SELECT id, ten, calo, loai_id FROM " + TBL_MONAN + " WHERE loai_id = ?",
+            new String[]{String.valueOf(loaiId)});
+    while (c.moveToNext()) {
+        list.add(new model_Monan(c.getInt(0), c.getString(1), c.getInt(2), c.getInt(3)));
     }
+    c.close();
+    return list;
+}
+
+public model_Monan getMonAnById(int id) {
+    SQLiteDatabase db = getReadableDatabase();
+    Cursor c = db.rawQuery("SELECT id, ten, calo, loai_id FROM " + TBL_MONAN + " WHERE id = ?",
+            new String[]{String.valueOf(id)});
+    model_Monan m = null;
+    if (c.moveToFirst()) {
+        m = new model_Monan(c.getInt(0), c.getString(1), c.getInt(2), c.getInt(3));
+    }
+    c.close();
+    return m;
+}
+
+// ==========================================
+// =========== NHẬT KÝ ĂN UỐNG =============
+// ==========================================
+
+public long insertFoodLog(int monanId, String ngay, String note) {
+    SQLiteDatabase db = getWritableDatabase();
+    ContentValues v = new ContentValues();
+    v.put("monan_id", monanId);
+    v.put("ngay", ngay);
+    v.put("note", note);
+    return db.insert(TBL_FOODLOG, null, v);
+}
+
+public List<model_FoodLog> getFoodLogsByDate(String ngay) {
+    List<model_FoodLog> list = new ArrayList<>();
+    SQLiteDatabase db = getReadableDatabase();
+    String sql = "SELECT fl.id, fl.monan_id, m.ten, m.calo, fl.ngay, fl.note " +
+            "FROM " + TBL_FOODLOG + " fl " +
+            "JOIN " + TBL_MONAN + " m ON fl.monan_id = m.id " +
+            "WHERE fl.ngay = ? ORDER BY fl.id DESC";
+    Cursor c = db.rawQuery(sql, new String[]{ngay});
+    while (c.moveToNext()) {
+        list.add(new model_FoodLog(
+                c.getInt(0),
+                c.getInt(1),
+                c.getString(2),
+                c.getInt(3),
+                c.getString(4),
+                c.getString(5)
+        ));
+    }
+    c.close();
+    return list;
+}
+
+public int updateFoodLog(int id, int monanId, String note) {
+    SQLiteDatabase db = getWritableDatabase();
+    ContentValues v = new ContentValues();
+    v.put("monan_id", monanId);
+    v.put("note", note);
+    return db.update(TBL_FOODLOG, v, "id = ?", new String[]{String.valueOf(id)});
+}
+
+public int deleteFoodLog(int id) {
+    SQLiteDatabase db = getWritableDatabase();
+    return db.delete(TBL_FOODLOG, "id = ?", new String[]{String.valueOf(id)});
+}
+
+// Tổng calo trong ngày
+public int getTongCaloNgay(String ngay) {
+    SQLiteDatabase db = getReadableDatabase();
+    Cursor c = db.rawQuery(
+            "SELECT SUM(m.calo) FROM " + TBL_FOODLOG + " f " +
+                    "JOIN " + TBL_MONAN + " m ON f.monan_id = m.id " +
+                    "WHERE f.ngay = ?",
+            new String[]{ngay});
+    int tong = 0;
+    if (c.moveToFirst()) tong = c.getInt(0);
+    c.close();
+    return tong;
+}
+
 
     public boolean isDatabaseEmpty() {
         SQLiteDatabase db = getReadableDatabase();
@@ -147,7 +334,16 @@ public class database extends SQLiteOpenHelper {
 
     public int getTongCaloHapThuTheoNgay(String ngay) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT SUM(calohapthu) FROM thucan WHERE ngay = ?", new String[]{ngay});
+
+        // JOIN bảng FOODLOG và MONAN để lấy tổng calo của món đã ăn trong ngày
+        Cursor c = db.rawQuery(
+                "SELECT SUM(m.calo * f.luot) AS tongCalo " +
+                        "FROM " + TBL_FOODLOG + " f " +
+                        "JOIN " + TBL_MONAN + " m ON f.monan_id = m.id " +
+                        "WHERE f.ngay = ?",
+                new String[]{ngay}
+        );
+
         int tong = 0;
         if (c.moveToFirst()) {
             tong = c.getInt(0);
@@ -184,8 +380,15 @@ public class database extends SQLiteOpenHelper {
 
     public int getTongCaloHapThuTheoTuan(String ngayBatDau, String ngayKetThuc) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT SUM(calohapthu) FROM thucan WHERE ngay BETWEEN ? AND ?",
-            new String[]{ngayBatDau, ngayKetThuc});
+
+        Cursor c = db.rawQuery(
+                "SELECT SUM(m.calo * f.luot) AS tongCalo " +
+                        "FROM " + TBL_FOODLOG + " f " +
+                        "JOIN " + TBL_MONAN + " m ON f.monan_id = m.id " +
+                        "WHERE date(f.ngay) BETWEEN date(?) AND date(?)",
+                new String[]{ngayBatDau, ngayKetThuc}
+        );
+
         int tong = 0;
         if (c.moveToFirst()) {
             tong = c.getInt(0);
@@ -193,6 +396,7 @@ public class database extends SQLiteOpenHelper {
         c.close();
         return tong;
     }
+
 
 
     public int getTongNuocUongTheoTuan(String ngayBatDau, String ngayKetThuc) {
@@ -222,8 +426,16 @@ public class database extends SQLiteOpenHelper {
 
     public int getTongCaloHapThuTheoThang(String thang) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT SUM(calohapthu) FROM thucan WHERE strftime('%Y-%m', ngay) = ?",
-            new String[]{thang});
+
+        // Ví dụ: thang = "2025-10" để lọc các ngày trong tháng 10/2025
+        Cursor c = db.rawQuery(
+                "SELECT SUM(m.calo * f.luot) AS tongCalo " +
+                        "FROM " + TBL_FOODLOG + " f " +
+                        "JOIN " + TBL_MONAN + " m ON f.monan_id = m.id " +
+                        "WHERE strftime('%Y-%m', f.ngay) = ?",
+                new String[]{thang}
+        );
+
         int tong = 0;
         if (c.moveToFirst()) {
             tong = c.getInt(0);
@@ -231,6 +443,7 @@ public class database extends SQLiteOpenHelper {
         c.close();
         return tong;
     }
+
 
     // Lấy tổng nước uống theo tháng
     public int getTongNuocUongTheoThang(String thang) {
@@ -277,67 +490,20 @@ public class database extends SQLiteOpenHelper {
         }
 
         // 2. Tạo dữ liệu cho 90 ngày gần nhất (3 tháng)
-        String[] tenBaiTap = {
-            "Chạy bộ", "Đạp xe", "Hít đất", "Gập bụng", "Plank", "Yoga", "Bơi lội",
-            "Nhảy dây", "Squat", "Lunges", "Đẩy tạ", "Kéo xà", "Nâng tạ", "Aerobic",
-            "Zumba", "Kickboxing", "Leo núi", "Tennis", "Cầu lông", "Đá bóng"
-        };
-        int[] thoiGianBaiTap = {
-            30, 45, 20, 15, 10, 60, 40, 25, 20, 25, 35, 30, 40, 50,
-            45, 55, 90, 60, 45, 60
-        };
-        int[] caloBaiTap = {
-            250, 400, 150, 120, 80, 200, 350, 300, 180, 200, 280, 250, 320, 380,
-            420, 450, 500, 450, 350, 480
-        };
+//        String[] tenBaiTap = {
+//            "Chạy bộ", "Đạp xe", "Hít đất", "Gập bụng", "Plank", "Yoga", "Bơi lội",
+//            "Nhảy dây", "Squat", "Lunges", "Đẩy tạ", "Kéo xà", "Nâng tạ", "Aerobic",
+//            "Zumba", "Kickboxing", "Leo núi", "Tennis", "Cầu lông", "Đá bóng"
+//        };
+//        int[] thoiGianBaiTap = {
+//            30, 45, 20, 15, 10, 60, 40, 25, 20, 25, 35, 30, 40, 50,
+//            45, 55, 90, 60, 45, 60
+//        };
+//        int[] caloBaiTap = {
+//            250, 400, 150, 120, 80, 200, 350, 300, 180, 200, 280, 250, 320, 380,
+//            420, 450, 500, 450, 350, 480
+//        };
 
-        String[][] thucAn = {
-            // Sáng (0-9)
-            {"Phở bò", "Sáng", "350"},
-            {"Bánh mì", "Sáng", "280"},
-            {"Xôi gà", "Sáng", "320"},
-            {"Bún bò", "Sáng", "380"},
-            {"Hủ tiếu", "Sáng", "340"},
-            {"Bánh cuốn", "Sáng", "260"},
-            {"Cháo sườn", "Sáng", "300"},
-            {"Bánh bao", "Sáng", "240"},
-            {"Mì trứng", "Sáng", "330"},
-            {"Cơm tấm", "Sáng", "400"},
-
-            // Trưa (10-24)
-            {"Cơm rang", "Trưa", "450"},
-            {"Cơm gà", "Trưa", "500"},
-            {"Bún chả", "Trưa", "420"},
-            {"Cơm sườn", "Trưa", "480"},
-            {"Mì xào", "Trưa", "400"},
-            {"Cơm chiên Dương Châu", "Trưa", "520"},
-            {"Bún bò Huế", "Trưa", "460"},
-            {"Phở xào", "Trưa", "440"},
-            {"Cơm cá", "Trưa", "490"},
-            {"Bánh canh", "Trưa", "380"},
-            {"Bún riêu cua", "Trưa", "430"},
-            {"Mì Quảng", "Trưa", "450"},
-            {"Cơm gà xối mỡ", "Trưa", "510"},
-            {"Bún thịt nướng", "Trưa", "470"},
-            {"Cơm rang hải sản", "Trưa", "530"},
-
-            // Tối (25-39)
-            {"Salad", "Tối", "200"},
-            {"Cơm canh", "Tối", "380"},
-            {"Phở gà", "Tối", "340"},
-            {"Cháo dinh dưỡng", "Tối", "250"},
-            {"Bún riêu", "Tối", "360"},
-            {"Súp rau", "Tối", "180"},
-            {"Canh chua", "Tối", "220"},
-            {"Gỏi cuốn", "Tối", "240"},
-            {"Bánh xèo", "Tối", "320"},
-            {"Cơm hến", "Tối", "350"},
-            {"Bún mắm", "Tối", "390"},
-            {"Cháo lòng", "Tối", "310"},
-            {"Súp hải sản", "Tối", "280"},
-            {"Cơm chiên", "Tối", "420"},
-            {"Mì gói xào", "Tối", "330"}
-        };
 
         int[] luongNuocOptions = {200, 250, 300, 350, 400, 450, 500, 600};
 
@@ -360,53 +526,17 @@ public class database extends SQLiteOpenHelper {
 
             // A. Thêm bài tập luyện (3-5 bài mỗi ngày)
             int soBaiTap = 3 + random.nextInt(3); // 3-5 bài
-            for (int j = 0; j < soBaiTap; j++) {
-                int idx = random.nextInt(tenBaiTap.length);
-                ContentValues cvTapLuyen = new ContentValues();
-                cvTapLuyen.put("tenbaitap", tenBaiTap[idx]);
-                cvTapLuyen.put("thoigian", thoiGianBaiTap[idx] + random.nextInt(10) - 5); // +/- 5 phút
-                cvTapLuyen.put("calotieuthu", caloBaiTap[idx] + random.nextInt(50) - 25); // +/- 25 calo
-                cvTapLuyen.put("ngay", ngay);
-                db.insert("tapluyen", null, cvTapLuyen);
-            }
+//            for (int j = 0; j < soBaiTap; j++) {
+//                int idx = random.nextInt(tenBaiTap.length);
+//                ContentValues cvTapLuyen = new ContentValues();
+//                cvTapLuyen.put("tenbaitap", tenBaiTap[idx]);
+//                cvTapLuyen.put("thoigian", thoiGianBaiTap[idx] + random.nextInt(10) - 5); // +/- 5 phút
+//                cvTapLuyen.put("calotieuthu", caloBaiTap[idx] + random.nextInt(50) - 25); // +/- 25 calo
+//                cvTapLuyen.put("ngay", ngay);
+//                db.insert("tapluyen", null, cvTapLuyen);
+//            }
 
-            // B. Thêm thức ăn (3-4 bữa mỗi ngày: sáng, trưa, tối, và đôi khi ăn vặt)
-            // Bữa sáng
-            int idxSang = random.nextInt(10); // 0-9: các món sáng
-            ContentValues cvSang = new ContentValues();
-            cvSang.put("tenthucan", thucAn[idxSang][0]);
-            cvSang.put("buaan", "Sáng");
-            cvSang.put("calohapthu", Integer.parseInt(thucAn[idxSang][2]) + random.nextInt(40) - 20);
-            cvSang.put("ngay", ngay);
-            db.insert("thucan", null, cvSang);
 
-            // Bữa trưa
-            int idxTrua = 10 + random.nextInt(15); // 10-24: các món trưa
-            ContentValues cvTrua = new ContentValues();
-            cvTrua.put("tenthucan", thucAn[idxTrua][0]);
-            cvTrua.put("buaan", "Trưa");
-            cvTrua.put("calohapthu", Integer.parseInt(thucAn[idxTrua][2]) + random.nextInt(50) - 25);
-            cvTrua.put("ngay", ngay);
-            db.insert("thucan", null, cvTrua);
-
-            // Bữa tối
-            int idxToi = 25 + random.nextInt(15); // 25-39: các món tối
-            ContentValues cvToi = new ContentValues();
-            cvToi.put("tenthucan", thucAn[idxToi][0]);
-            cvToi.put("buaan", "Tối");
-            cvToi.put("calohapthu", Integer.parseInt(thucAn[idxToi][2]) + random.nextInt(40) - 20);
-            cvToi.put("ngay", ngay);
-            db.insert("thucan", null, cvToi);
-
-            // Đôi khi thêm bữa phụ (30% xác suất)
-            if (random.nextInt(10) < 3) {
-                ContentValues cvPhu = new ContentValues();
-                cvPhu.put("tenthucan", "Ăn vặt");
-                cvPhu.put("buaan", "Phụ");
-                cvPhu.put("calohapthu", 150 + random.nextInt(100)); // 150-250 calo
-                cvPhu.put("ngay", ngay);
-                db.insert("thucan", null, cvPhu);
-            }
 
             // C. Thêm lượng nước uống (5-8 lần mỗi ngày)
             int soLanUong = 5 + random.nextInt(4); // 5-8 lần
@@ -427,4 +557,34 @@ public class database extends SQLiteOpenHelper {
             seedData();
         }
     }
+    // =============== ĐĂNG KÝ - ĐĂNG NHẬP ===============
+
+    // Thêm tài khoản mới
+    public boolean dangKy(String ten, String matkhau) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Kiểm tra trùng tên đăng nhập
+        Cursor c = db.rawQuery("SELECT * FROM taikhoan WHERE tendangnhap = ?", new String[]{ten});
+        boolean exists = c.moveToFirst();
+        c.close();
+
+        if (exists) return false; // đã tồn tại
+
+        ContentValues values = new ContentValues();
+        values.put("tendangnhap", ten);
+        values.put("matkhau", matkhau);
+        long result = db.insert("taikhoan", null, values);
+        return result != -1;
+    }
+
+    // Kiểm tra đăng nhập
+    public boolean dangNhap(String ten, String matkhau) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM taikhoan WHERE tendangnhap = ? AND matkhau = ?",
+                new String[]{ten, matkhau});
+        boolean success = c.moveToFirst();
+        c.close();
+        return success;
+    }
+
 }

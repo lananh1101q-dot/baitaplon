@@ -4,35 +4,54 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/edtTen"
+    <Spinner
+        android:id="@+id/spnTenBaiTap"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Tên bài tập" />
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#2196F3"
+        android:gravity="center"
+        android:paddingBottom="16dp"/>
 
-    <EditText
-        android:id="@+id/edtThoigian"
+    <Spinner
+        android:id="@+id/spnThoiGian"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Thời gian (phút)"
-        android:inputType="number" />
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#21F0F3"
+        android:gravity="center"
+        android:paddingBottom="16dp"/>
 
-    <EditText
+    <TextView
         android:id="@+id/edtCalo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Calo tiêu thụ"
-        android:inputType="number" />
-
-    <Button
-        android:id="@+id/btnLuu"
+        android:inputType="number"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="#FF9800"
+        android:gravity="center"
+        android:paddingBottom="16dp"/>
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Lưu" />
+        android:layout_height="wrap_content">
 
-    <Button
-        android:id="@+id/btnHuy"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Hủy" />
+
+        <Button
+            android:id="@+id/btnHuy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hủy" />
+        <Button
+            android:id="@+id/btnLuu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lưu" />
+
+    </LinearLayout>
+
+
 </LinearLayout>

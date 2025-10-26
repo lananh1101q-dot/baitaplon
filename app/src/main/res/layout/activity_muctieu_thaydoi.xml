@@ -26,19 +26,40 @@
             android:layout_marginTop="16dp"
             android:text="Bạn vận động như thế nào?"
             android:textSize="16sp" />
-
-        <EditText
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Số phút/ngày (phút)"
-            android:inputType="number" />
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Số phút/ngày (phút):"/>
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="Số ngày/tuần (ngày)"
-            android:inputType="number" />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Số phút/ngày (phút)"
+                android:inputType="number" />
+
+        </LinearLayout>
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Số ngày/tuần (ngày):"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="Số ngày/tuần (ngày)"
+        android:inputType="number" />
+</LinearLayout>
+
 
         <!-- Chọn giới tính -->
         <RadioGroup
@@ -49,7 +70,8 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Giới tính: " />
+                android:text="Giới tính: "
+                android:id="@+id/gioiTinh"/>
 
             <RadioButton
 
@@ -128,7 +150,7 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Tiếp"
+                android:text="Xong"
                 android:id="@+id/tiep"/>
 
         </LinearLayout>
