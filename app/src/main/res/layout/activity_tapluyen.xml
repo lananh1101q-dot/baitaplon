@@ -4,9 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?android:attr/selectableItemBackground"
-    android:clickable="true"
-    android:focusable="true"
-    android:descendantFocusability="blocksDescendants"
+
     >
 
     <!-- Nội dung chính -->
@@ -36,7 +34,9 @@
             android:id="@+id/timkiem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:queryHint="Tìm bài tập..." />
+            android:queryHint="Tìm bài tập..."
+            android:focusable="true"
+            android:focusableInTouchMode="true"/>
         <Button
             android:id="@+id/thembaitap"
             android:layout_width="match_parent"

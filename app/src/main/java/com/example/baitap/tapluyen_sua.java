@@ -70,10 +70,10 @@ public class tapluyen_sua extends DialogFragment {
             int caloMoi = tapluyen_DanhMucBaiTap.tinhCalo(tenMoi, thoiGianMoi);
 
             // ✅ Kiểm tra trùng bài tập trong cùng ngày (không tính chính nó)
-            if (dao.isDuplicateForEdit(tapLuyen.getId(), tenMoi, tapLuyen.getNgay())) {
-                Toast.makeText(getContext(), "Bài tập này đã tồn tại trong ngày hôm nay!", Toast.LENGTH_SHORT).show();
-                return;
-            }
+//            if (dao.isDuplicateForEdit(tapLuyen.getId(), tenMoi, tapLuyen.getNgay())) {
+//                Toast.makeText(getContext(), "Bài tập này đã tồn tại trong ngày hôm nay!", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
             tapLuyen.setTenBaiTap(tenMoi);
             tapLuyen.setThoiGian(thoiGianMoi);
             tapLuyen.setCaloTieuThu(caloMoi);

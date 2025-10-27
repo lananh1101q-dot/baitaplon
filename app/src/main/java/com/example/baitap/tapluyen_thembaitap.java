@@ -71,10 +71,10 @@ public class tapluyen_thembaitap extends Activity {
             int calo = tapluyen_DanhMucBaiTap.tinhCalo(tenBaiTap, thoiGian);
             String ngay = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
             // Kiểm tra trùng bài tập cùng ngày
-            if (dao.isDuplicate(tenBaiTap, ngay)) {
-                Toast.makeText(this, "Bài tập này đã tồn tại trong ngày hôm nay!", Toast.LENGTH_SHORT).show();
-                return;
-            }
+//            if (dao.isDuplicate(tenBaiTap, ngay)) {
+//                Toast.makeText(this, "Bài tập này đã tồn tại trong ngày hôm nay!", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
             dao.insert(new tapluyen_employ(0, tenBaiTap, thoiGian, calo, ngay));
             Toast.makeText(this, "Đã lưu bài tập: " + tenBaiTap, Toast.LENGTH_SHORT).show();
             finish();

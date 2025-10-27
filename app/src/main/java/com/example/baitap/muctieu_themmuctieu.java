@@ -68,18 +68,18 @@ public class muctieu_themmuctieu extends AppCompatActivity {
                 return;
             }
 
-            if (cao < 100 || cao > 300) {
-                Toast.makeText(this, "Chiều cao phải trong khoảng 100–300 cm", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if (nang < 30 || nang > 300) {
-                Toast.makeText(this, "Cân nặng phải trong khoảng 30–300 kg", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if (tuoi < 5 || tuoi > 120) {
-                Toast.makeText(this, "Tuổi phải trong khoảng 5–120", Toast.LENGTH_SHORT).show();
-                return;
-            }
+//            if (cao < 100 || cao > 300) {
+//                Toast.makeText(this, "Chiều cao phải trong khoảng 100–300 cm", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+//            if (nang < 30 || nang > 300) {
+//                Toast.makeText(this, "Cân nặng phải trong khoảng 30–300 kg", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+//            if (tuoi < 5 || tuoi > 120) {
+//                Toast.makeText(this, "Tuổi phải trong khoảng 5–120", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
 
             boolean isNam = radNam.isChecked();
 
