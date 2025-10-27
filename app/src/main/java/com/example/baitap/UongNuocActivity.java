@@ -9,16 +9,20 @@ import android.view.MenuItem;
 import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import java.util.ArrayList;
+
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class UongNuocActivity extends AppCompatActivity {
 
@@ -29,10 +33,12 @@ public class UongNuocActivity extends AppCompatActivity {
     private ListView listLichSu;
     private ArrayAdapter<String> adapter;
     private ArrayList<String> lichSu = new ArrayList<>();
+
     private int tongUong = 0;
     private int mucTieu = 2000; // mặc định 2 lít
 
     private MucTieuDAO mucTieuDAO;
+    private UongNuocDAO uongNuocDAO;
     private BarChart barChart;
 
     @Override
@@ -51,14 +57,20 @@ public class UongNuocActivity extends AppCompatActivity {
         listLichSu = findViewById(R.id.listLichSu);
         barChart = findViewById(R.id.barChart);
 
-        // --- Lấy dữ liệu từ bảng mục tiêu ---
         mucTieuDAO = new MucTieuDAO(this);
+        uongNuocDAO = new UongNuocDAO(this);
+
+        // --- Lấy dữ liệu từ bảng mục tiêu ---
         muctieu mucTieuMoiNhat = mucTieuDAO.getLatest();
         if (mucTieuMoiNhat != null) {
-            mucTieu = mucTieuMoiNhat.getLuongNuoc(); // Lấy lượng nước theo dữ liệu người dùng
+            mucTieu = mucTieuMoiNhat.getLuongNuoc();
         } else {
-            mucTieu = 2000; // fallback nếu chưa có dữ liệu
+            mucTieu = 2000; // fallback
         }
+
+        // --- Lấy dữ liệu ban đầu ---
+        tongUong = uongNuocDAO.getTongNuocHomNay();
+        lichSu.addAll(uongNuocDAO.getLichSuHomNay());
 
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, lichSu);
         listLichSu.setAdapter(adapter);
@@ -69,17 +81,26 @@ public class UongNuocActivity extends AppCompatActivity {
         btnLuu.setOnClickListener(v -> {
             try {
                 int ml = Integer.parseInt(edtNhapNuoc.getText().toString());
-                tongUong += ml;
-                lichSu.add("Uống " + ml + "ml");
+                if (ml <= 0) {
+                    Toast.makeText(this, "Vui lòng nhập số ml hợp lệ", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                uongNuocDAO.themUongNuoc(ml, "");
+                tongUong = uongNuocDAO.getTongNuocHomNay();
+                lichSu.clear();
+                lichSu.addAll(uongNuocDAO.getLichSuHomNay());
                 adapter.notifyDataSetChanged();
                 capNhatUI();
                 edtNhapNuoc.setText("");
+
+                Toast.makeText(this, "Đã lưu " + ml + "ml nước!", Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
-                Toast.makeText(this, "Vui lòng nhập số ml hợp lệ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Lỗi nhập liệu!", Toast.LENGTH_SHORT).show();
             }
         });
 
-        // Nút nhắc nhở
+        // Nút bật nhắc nhở
         btnNhacNho.setOnClickListener(v -> batNhacNho());
 
         // BottomNavigationView
@@ -97,11 +118,14 @@ public class UongNuocActivity extends AppCompatActivity {
                     startActivity(new Intent(UongNuocActivity.this, thongke.class));
                 } else if (id == R.id.menu_muctieu) {
                     startActivity(new Intent(UongNuocActivity.this, MucTieuActivity.class));
+                }else if (id == R.id.menu_thucan) {
+                    startActivity(new Intent(UongNuocActivity.this, thucan_activity.class));
                 }
-                overridePendingTransition(0, 0);
                 return true;
             }
         });
+
+
     }
 
     private void capNhatUI() {
@@ -112,32 +136,38 @@ public class UongNuocActivity extends AppCompatActivity {
         tvTienDo.setText("Tiến độ: " + tienDo + "%");
         progressBar.setProgress(tienDo);
 
-        // --- Cập nhật biểu đồ ---
+        // --- Vẽ biểu đồ 7 ngày gần nhất ---
+        Map<String, Integer> data7Ngay = uongNuocDAO.getNuoc7NgayGanNhat();
         ArrayList<BarEntry> entries = new ArrayList<>();
-        entries.add(new BarEntry(0, tongUong));
-        entries.add(new BarEntry(1, mucTieu));
+        ArrayList<String> labels = new ArrayList<>();
 
-        BarDataSet dataSet = new BarDataSet(entries, "Uống nước hôm nay");
+        int index = 0;
+        for (Map.Entry<String, Integer> entry : data7Ngay.entrySet()) {
+            entries.add(new BarEntry(index++, entry.getValue()));
+            labels.add(entry.getKey().substring(5)); // chỉ lấy MM-dd
+        }
+
+        BarDataSet dataSet = new BarDataSet(entries, "7 ngày gần nhất");
         dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
         dataSet.setValueTextSize(12f);
 
         BarData data = new BarData(dataSet);
-        data.setBarWidth(0.6f);
+        data.setBarWidth(0.9f);
         barChart.setData(data);
         barChart.getDescription().setEnabled(false);
 
         XAxis xAxis = barChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setGranularity(1f);
-        xAxis.setValueFormatter(new com.github.mikephil.charting.formatter.ValueFormatter() {
+        xAxis.setValueFormatter(new ValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
-                if (value == 0f) return "Đã uống";
-                else if (value == 1f) return "Mục tiêu";
-                else return "";
+                if (value >= 0 && value < labels.size()) {
+                    return labels.get((int) value);
+                } else {
+                    return "";
+                }
             }
-
-
         });
 
         YAxis leftAxis = barChart.getAxisLeft();
@@ -147,13 +177,12 @@ public class UongNuocActivity extends AppCompatActivity {
         barChart.invalidate();
     }
 
-
-
     private void batNhacNho() {
         Toast.makeText(this, "Đã bật nhắc nhở uống nước mỗi 2 giờ!", Toast.LENGTH_SHORT).show();
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, ThongBaoReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+
         alarmManager.setRepeating(
                 AlarmManager.RTC_WAKEUP,
                 System.currentTimeMillis() + 7200000,

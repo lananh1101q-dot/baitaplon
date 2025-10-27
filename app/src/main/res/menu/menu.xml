@@ -17,19 +17,19 @@
 
         android:id="@+id/menu_tapluyen"
         android:title="Tập luyện"
-        android:icon="@drawable/tapluyen"
+
         />
     <item
 
         android:id="@+id/menu_thongke"
         android:title="Thống kê"
-        android:icon="@drawable/thongke"
+
         />
 
     <item
 
         android:id="@+id/menu_muctieu"
         android:title="Mục tiêu"
-        android:icon="@drawable/muctieu"
+
         />
 </menu>

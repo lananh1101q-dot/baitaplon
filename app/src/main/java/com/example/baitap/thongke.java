@@ -40,7 +40,7 @@ public class thongke extends AppCompatActivity {
 
         db = new database(this);
         // Tự động tạo dữ liệu mẫu nếu database trống
-        db.autoSeedIfEmpty();
+
 
         mucTieuDAO = new MucTieuDAO(this);
 

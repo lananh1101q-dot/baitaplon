@@ -22,13 +22,28 @@ public class UongNuocDAO {
         String ngay = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         String gio = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
 
-        // Lưu vào bảng uongnuoc (tổng theo ngày)
-        ContentValues v1 = new ContentValues();
-        v1.put("luongnuoc", soMl);
-        v1.put("ngay", ngay);
-        db.insert("uongnuoc", null, v1);
+        // 🔹 Kiểm tra xem ngày hôm nay đã có trong bảng uongnuoc chưa
+        Cursor check = db.rawQuery("SELECT luongnuoc FROM uongnuoc WHERE ngay = ?", new String[]{ngay});
 
-        // Lưu vào bảng lịch sử chi tiết
+        if (check.moveToFirst()) {
+            // 🔸 Nếu đã có → cộng thêm vào tổng lượng cũ
+            int hienTai = check.getInt(0);
+            int tongMoi = hienTai + soMl;
+
+            ContentValues update = new ContentValues();
+            update.put("luongnuoc", tongMoi);
+            db.update("uongnuoc", update, "ngay = ?", new String[]{ngay});
+
+        } else {
+            // 🔸 Nếu chưa có → thêm mới dòng cho ngày đó
+            ContentValues insert = new ContentValues();
+            insert.put("luongnuoc", soMl);
+            insert.put("ngay", ngay);
+            db.insert("uongnuoc", null, insert);
+        }
+        check.close();
+
+        // 🔹 Luôn ghi chi tiết vào bảng lịch sử
         ContentValues v2 = new ContentValues();
         v2.put("ngay", ngay);
         v2.put("gio", gio);
@@ -39,6 +54,7 @@ public class UongNuocDAO {
         db.close();
         return id;
     }
+
 
     // 🧊 Lấy tổng nước uống trong ngày
     public int getTongNuocHomNay() {
@@ -108,4 +124,6 @@ public class UongNuocDAO {
         db.close();
         return map;
     }
+
+
 }
