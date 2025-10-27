@@ -25,6 +25,7 @@ import java.util.Map;
 
         // Hàm lấy calo tiêu thụ tương ứng tên bài tập + thời gian
         public static int tinhCalo(String tenBaiTap, int thoiGianPhut) {
+
             Integer caloPhut = CALO_MAP.get(tenBaiTap);
             if (caloPhut == null) caloPhut = 5; // mặc định nếu không có
             return caloPhut * thoiGianPhut;

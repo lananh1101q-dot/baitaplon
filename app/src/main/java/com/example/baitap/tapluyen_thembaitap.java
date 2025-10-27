@@ -1,5 +1,6 @@
 package com.example.baitap;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
@@ -7,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class tapluyen_thembaitap extends AppCompatActivity {
+public class tapluyen_thembaitap extends Activity {
 
     private Spinner spnTenBaiTap, spnThoiGian;
     private TextView txtCalo;
@@ -25,6 +26,13 @@ public class tapluyen_thembaitap extends AppCompatActivity {
         btnSave = findViewById(R.id.btnLuu);
         btnCancel = findViewById(R.id.btnHuy);
         dao = new TapLuyenDAO(this);
+//        ImageButton trove=findViewById(R.id.trove);
+//        trove.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                finish();
+//            }
+//        });
 
         // Gán dữ liệu cho spinner
         spnTenBaiTap.setAdapter(new ArrayAdapter<>(
@@ -62,7 +70,11 @@ public class tapluyen_thembaitap extends AppCompatActivity {
             int thoiGian = (int) spnThoiGian.getSelectedItem();
             int calo = tapluyen_DanhMucBaiTap.tinhCalo(tenBaiTap, thoiGian);
             String ngay = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-
+            // Kiểm tra trùng bài tập cùng ngày
+            if (dao.isDuplicate(tenBaiTap, ngay)) {
+                Toast.makeText(this, "Bài tập này đã tồn tại trong ngày hôm nay!", Toast.LENGTH_SHORT).show();
+                return;
+            }
             dao.insert(new tapluyen_employ(0, tenBaiTap, thoiGian, calo, ngay));
             Toast.makeText(this, "Đã lưu bài tập: " + tenBaiTap, Toast.LENGTH_SHORT).show();
             finish();

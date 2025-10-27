@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -62,6 +63,20 @@ public class tapluyen extends AppCompatActivity {
         adapter = new tapluyen_adapter(this, R.layout.activity_tapluyen_listitem, list, dao);
         listview = findViewById(R.id.dstapluyen);
         listview.setAdapter(adapter);
+ //sự kiện trong lisview
+//        listview.setOnItemClickListener((parent, view, position, id) -> {
+//            tapluyen_employ item = list.get(position);
+//            Toast.makeText(this, "Bài tập: " + item.getTenBaiTap(), Toast.LENGTH_SHORT).show();
+//        });
+//
+//        listview.setOnItemLongClickListener((parent, view, position, id) -> {
+//            tapluyen_employ item = list.get(position);
+//            dao.delete(item.getId()); // Xóa trong database
+//            list.remove(position);    // Xóa trong danh sách
+//            adapter.notifyDataSetChanged(); // Cập nhật giao diện
+//            Toast.makeText(this, "Đã xóa: " + item.getTenBaiTap(), Toast.LENGTH_SHORT).show();
+//            return true; // Quan trọng: báo là sự kiện đã xử lý
+//        });
 
         SearchView timkiem = findViewById(R.id.timkiem);
         timkiem.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

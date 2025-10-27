@@ -99,4 +99,24 @@ public class TapLuyenDAO {
         db.close();
         return list;
     }
+    public boolean isDuplicate(String tenBaiTap, String ngay) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor c = db.rawQuery("SELECT id FROM TapLuyen WHERE tenBaiTap=? AND ngay=?", new String[]{tenBaiTap, ngay});
+        boolean exists = c.moveToFirst();
+        c.close();
+        db.close();
+        return exists;
+    }
+    public boolean isDuplicateForEdit(int id, String tenBaiTap, String ngay) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT id FROM TapLuyen WHERE tenBaiTap=? AND ngay=? AND id<>?",
+                new String[]{tenBaiTap, ngay, String.valueOf(id)});
+        boolean exists = c.moveToFirst();
+        c.close();
+        db.close();
+        return exists;
+    }
+
+
 }
