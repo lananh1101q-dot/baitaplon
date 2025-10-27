@@ -2,6 +2,7 @@ package com.example.baitap;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import java.text.SimpleDateFormat;
@@ -28,7 +29,10 @@ public class muctieu_themmuctieu extends AppCompatActivity {
         radNu = findViewById(R.id.nu);
         btnTiep = findViewById(R.id.tiep);
         btnVe = findViewById(R.id.ve);
-
+        boolean fromLogin = getIntent().getBooleanExtra("fromLogin", false);
+        if (fromLogin) {
+            btnVe.setVisibility(View.GONE);
+        }
         dao = new MucTieuDAO(this);
         mucTieuHienTai = dao.getCurrent(currentUserId);
 
