@@ -44,7 +44,11 @@ public class dangnhap_activity extends AppCompatActivity {
                         .apply();
 
                 Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(this, muctieu_themmuctieu.class));
+                // ✅ Chỉ giữ lại đoạn này
+                Intent intent = new Intent(this, muctieu_themmuctieu.class);
+                intent.putExtra("fromLogin", true); // đánh dấu vào từ login
+                startActivity(intent);
+
                 finish();
             } else {
                 Toast.makeText(this, "Sai tài khoản hoặc mật khẩu!", Toast.LENGTH_SHORT).show();
