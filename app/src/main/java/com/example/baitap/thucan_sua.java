@@ -109,7 +109,7 @@ public class thucan_sua extends AppCompatActivity {
     }
 
     private String curDate() {
-        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault());
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
         return sdf.format(new java.util.Date());
     }
 
