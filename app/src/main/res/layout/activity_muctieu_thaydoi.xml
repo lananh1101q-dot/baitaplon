@@ -18,73 +18,44 @@
             android:layout_gravity="center"
             android:text="Chỉ số trao đổi chất (BMR)"
             android:textColor="#35C47E"
-            android:textSize="22sp" />
+            android:textSize="30sp" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Bạn vận động như thế nào?"
-            android:textSize="16sp" />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Số phút/ngày (phút):"/>
 
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Số phút/ngày (phút)"
-                android:inputType="number" />
 
-        </LinearLayout>
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Số ngày/tuần (ngày):"/>
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:hint="Số ngày/tuần (ngày)"
-        android:inputType="number" />
-</LinearLayout>
 
 
         <!-- Chọn giới tính -->
         <RadioGroup
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            >
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Giới tính: "
-                android:id="@+id/gioiTinh"/>
+                android:id="@+id/gioiTinh"
+                android:textColor="#090808"
+                android:textSize="23sp" />
 
             <RadioButton
 
                 android:id="@+id/nam"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nam" />
+                android:text="Nam"
+                android:textColor="#090808"
+                android:textSize="23sp"/>
 
             <RadioButton
                 android:id="@+id/nu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nữ" />
+                android:text="Nữ"
+                android:textColor="#090808"
+                android:textSize="23sp"/>
 
         </RadioGroup>
 
@@ -96,12 +67,18 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Chiều cao" />
+                android:text="Chiều cao :"
+                android:inputType="number"
+                android:textColor="#03A9F4"
+                android:textSize="23sp"/>
 
             <EditText
                 android:id="@+id/chieucao"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="cm"
+                android:textColor="#03A9F4"
+                android:textSize="23sp"/>
         </LinearLayout>
 
 
@@ -113,12 +90,19 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Cân nặng " />
+                android:text="Cân nặng :"
+                android:inputType="number"
+                android:textColor="#03A9F4"
+                android:textSize="23sp"/>
 
             <EditText
                 android:id="@+id/cannang"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="kg"
+                android:textColor="#03A9F4"
+                android:textSize="23sp"/>
+
 
         </LinearLayout>
         <!-- Tuổi -->
@@ -129,12 +113,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tuổi:         " />
+                android:text="Tuổi:         "
+                android:textColor="#FF9800"
+                android:textSize="23sp"/>
 
             <EditText
                 android:id="@+id/tuoi"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:inputType="number"/>
 
         </LinearLayout>
 
@@ -146,12 +133,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Trở về "
-                android:id="@+id/ve"/>
+                android:id="@+id/ve"
+                android:textColor="#03A9F4"
+                android:textSize="23sp"/>
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Xong"
-                android:id="@+id/tiep"/>
+                android:id="@+id/tiep"
+                android:textColor="#03A9F4"
+                android:textSize="23sp"/>
 
         </LinearLayout>
 

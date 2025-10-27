@@ -46,14 +46,37 @@ public class muctieu_themmuctieu extends AppCompatActivity {
             String sCao = edtChieuCao.getText().toString().trim();
             String sNang = edtCanNang.getText().toString().trim();
             String sTuoi = edtTuoi.getText().toString().trim();
+            // 🔹 Kiểm tra nhập trống
             if (sCao.isEmpty() || sNang.isEmpty() || sTuoi.isEmpty()) {
-                Toast.makeText(this, "Vui lòng nhập đủ thông tin", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            double cao = Double.parseDouble(sCao);
-            double nang = Double.parseDouble(sNang);
-            int tuoi = Integer.parseInt(sTuoi);
+            double cao, nang;
+            int tuoi;
+
+            try {
+                cao = Double.parseDouble(sCao);
+                nang = Double.parseDouble(sNang);
+                tuoi = Integer.parseInt(sTuoi);
+            } catch (NumberFormatException e) {
+                Toast.makeText(this, "Dữ liệu phải là số hợp lệ!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (cao < 100 || cao > 300) {
+                Toast.makeText(this, "Chiều cao phải trong khoảng 100–300 cm", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (nang < 30 || nang > 300) {
+                Toast.makeText(this, "Cân nặng phải trong khoảng 30–300 kg", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (tuoi < 5 || tuoi > 120) {
+                Toast.makeText(this, "Tuổi phải trong khoảng 5–120", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             boolean isNam = radNam.isChecked();
 
             double bmr = isNam
